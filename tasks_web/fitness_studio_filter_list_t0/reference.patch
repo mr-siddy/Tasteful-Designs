@@ -1,26 +1,11 @@
 --- a/src/components/ClassSchedule.tsx
 +++ b/src/components/ClassSchedule.tsx
-@@ -90,13 +90,7 @@
- export function ClassSchedule() {
-   const [active, setActive] = useState('All')
+@@ -299,7 +299,7 @@
+         </p>
  
--  const [visible, setVisible] = useState(CLASSES)
--
--  function selectCategory(category: string) {
--    setActive(category)
--    // Narrow the schedule down to the type that is now selected.
--    setVisible(active === 'All' ? CLASSES : CLASSES.filter((c) => c.category === active))
--  }
-+  const visible = active === 'All' ? CLASSES : CLASSES.filter((c) => c.category === active)
- 
-   return (
-     <section id="schedule" className="mx-auto max-w-4xl px-4 py-20">
-@@ -118,7 +112,7 @@
-             type="button"
-             data-testid="class-filter-button"
-             aria-pressed={category === active}
--            onClick={() => selectCategory(category)}
-+            onClick={() => setActive(category)}
-             className={
-               category === active
-                 ? 'rounded-full bg-lime-400 px-5 py-2 text-sm font-semibold text-stone-900'
+         <div data-testid="class-list" className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+-          {SESSIONS.map((session) => (
++          {shown.map((session) => (
+             <SessionCard key={session.title} session={session} />
+           ))}
+         </div>

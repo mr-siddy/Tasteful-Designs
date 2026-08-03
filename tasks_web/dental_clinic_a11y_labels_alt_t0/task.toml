@@ -1,6 +1,6 @@
 [metadata]
 name = "dental_clinic_a11y_labels_alt_t0"
-description = "A dental clinic landing page exposes nothing to assistive tech — photos have no alt text, icon-only controls have no accessible name and the booking fields are not tied to their labels; each should be announceable."
+description = "A dental studio's booking section is silent to a screen reader — the studio photographs have no alt text, the round quick-contact buttons announce as bare buttons and the request-form boxes are not tied to the wording printed beside them; every picture, control and field in it should be announceable."
 tier = 0
 parent = ""
 domain = "dental_clinic_a11y_labels_alt"

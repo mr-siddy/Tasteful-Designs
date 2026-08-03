@@ -1,27 +1,29 @@
-A patient who reads our site with a screen reader wrote in, and she could not
-get through the page at all.
+One of our patients rang the desk to say she had tried to book with a screen
+reader and gave up halfway through the booking section, and Wes sat with her on
+the phone to work out where it went wrong.
 
-The photographs came out as nothing — the reception picture and the three
-portraits under "Who you'll see" are announced as unlabelled graphics, so she
-had no idea the practice had shown her a room or who any of the clinicians
-were. The little round controls in the top corner are worse: her reader called
-each of them just "button", one after another, and she had to click all three
-blind to work out which one gives the phone number, which one gives the address
-and which one gives the opening times. The small control that clears the
-same-day emergency strip is the same — an unnamed button she was afraid to
-press.
+The three pictures of the studio beside the contact buttons were read out as
+nothing at all — her reader skipped straight past them in silence, so she never
+knew we had shown her the quiet room, a treatment room and the front desk. The
+four round buttons above them were worse: each one was announced as just
+"button", four times over, so the only way to find out which one calls the desk,
+which one texts us, which one gives directions and which one opens an email was
+to press all four and see what came up. She mentioned that the pictures of the
+dentists further down the page read out perfectly, which is what made the booking
+section so confusing.
 
-The appointment form is where she gave up. She could hear "Full name", "Email
-address", "Phone number", "Preferred day" and "Reason for your visit" read out
-as she moved down the page, but when she landed in a box her reader announced
-nothing, so she could not tell which of the five she was actually typing into.
+She stopped at the request form. Moving down it she could hear "Full name",
+"Email address", "Mobile number", "Preferred day", "Reason for visit", "Anything
+we should know" and the reminder line printed beside the checkbox — but the
+moment she landed in one of the boxes her reader announced nothing at all, so she
+could not tell which of the seven she was typing into. She gave up and rang us
+instead.
 
-Everything on the page should be announceable. Each photograph should say what
-it shows — the portraits by the clinician's name, so she knows whose face she
-is being shown. Each icon-only control should say what it does. And each box in
-the form should be tied to the wording already printed above it, so landing in
-a box announces the right thing.
+Every part of that section should be announceable. Each studio picture should say
+what it is a picture of, each of the round contact buttons should say what
+pressing it does, and each box in the request form should be tied to the wording
+already printed beside it, so that landing in a box announces the right thing.
 
-This is about what assistive technology hears, not about how the page looks:
-keep the same layout, copy, photographs, controls and fields exactly as they
+This is about what assistive technology hears, not about how the page looks: keep
+the same layout, wording, pictures, buttons, options and fields exactly as they
 are, and leave the rest of the page alone.

@@ -1,6 +1,6 @@
 [metadata]
 name = "restaurant_tabs_active_panel_t0"
-description = "A restaurant menu section renders all three tab panels at once and marks every tab as selected; choosing a tab should show only that menu and mark only that tab."
+description = "A restaurant landing page prints all four menu tab panels at once and marks every tab as selected; choosing a menu should show only that menu and mark only that tab."
 tier = 0
 parent = ""
 domain = "restaurant_tabs_active_panel"

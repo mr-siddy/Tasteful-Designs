@@ -1,30 +1,37 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-const planCards = () => screen.getAllByTestId('plan-card')
+// Copperline promotes exactly one tier: Crew, the middle plan of three.
+const PROMOTED = 'Crew'
+const PROMOTED_POSITION = 1 // second card, in the order the plans are laid out
 
-const planName = (card: HTMLElement) =>
-  within(card).getByRole('heading', { level: 3 }).textContent?.trim()
+const cards = () => screen.getAllByTestId('plan-card')
+const badges = () => screen.queryAllByTestId('popular-badge')
 
-const cardNamed = (name: string) => {
-  const card = planCards().find((c) => planName(c) === name)
-  if (!card) throw new Error(`no plan card named ${name}`)
-  return card
+function cardNamed(name: string): HTMLElement {
+  const found = cards().find((card) =>
+    Array.from(card.querySelectorAll('h1, h2, h3, h4, h5, h6')).some(
+      (heading) => (heading.textContent || '').trim() === name,
+    ),
+  )
+  if (!found) throw new Error(`no pricing card is titled "${name}"`)
+  return found
 }
 
-const flaggedCards = () =>
-  planCards().filter((c) => within(c).queryAllByTestId('popular-badge').length > 0)
-
-describe('Slatepine landing — structure', () => {
-  it('renders the product name', () => {
+describe('Copperline landing — structure', () => {
+  it('renders the headline', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1, name: /slatepine/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(/on one board/i)
   })
 
   it('offers the three plans in order', () => {
     render(<App />)
-    expect(planCards().map(planName)).toEqual(['Starter', 'Team', 'Scale'])
+    const names = cards().map(
+      (card) => (card.querySelector('h1, h2, h3, h4, h5, h6')?.textContent || '').trim(),
+    )
+    expect(names).toEqual(['Solo', 'Crew', 'Fleet'])
   })
 
   it('renders a footer landmark', () => {
@@ -33,43 +40,55 @@ describe('Slatepine landing — structure', () => {
   })
 })
 
-describe('Slatepine pricing — one recommended plan (the defect)', () => {
-  it('flags exactly one plan as the most popular', () => {
+describe('Copperline pricing — one promoted tier (the defect)', () => {
+  it('shows the most-popular badge exactly once on the page', () => {
     render(<App />)
-    expect(screen.queryAllByTestId('popular-badge')).toHaveLength(1)
+    expect(badges()).toHaveLength(1)
   })
 
-  it('puts the most-popular flag on the Team plan, matched by name', () => {
+  it('puts that badge on the Crew plan', () => {
     render(<App />)
-    expect(flaggedCards().map(planName)).toEqual(['Team'])
+    expect(within(cardNamed(PROMOTED)).queryAllByTestId('popular-badge')).toHaveLength(1)
   })
 
-  it('puts the most-popular flag on the middle tier, matched by order', () => {
+  it('puts the badge on the second plan in the row', () => {
     render(<App />)
-    const flaggedPositions = planCards().flatMap((c, i) =>
-      within(c).queryAllByTestId('popular-badge').length > 0 ? [i] : [],
+    const promotedIndex = cards().findIndex(
+      (card) => within(card).queryAllByTestId('popular-badge').length > 0,
     )
-    expect(flaggedPositions).toEqual([1])
+    expect(promotedIndex).toBe(PROMOTED_POSITION)
   })
 
-  it('leaves the Starter plan unflagged', () => {
+  it('leaves the Solo plan unbadged', () => {
     render(<App />)
-    expect(within(cardNamed('Starter')).queryByTestId('popular-badge')).toBeNull()
+    expect(within(cardNamed('Solo')).queryByTestId('popular-badge')).toBeNull()
   })
 
-  it('leaves the Scale plan unflagged', () => {
+  it('leaves the Fleet plan unbadged', () => {
     render(<App />)
-    expect(within(cardNamed('Scale')).queryByTestId('popular-badge')).toBeNull()
+    expect(within(cardNamed('Fleet')).queryByTestId('popular-badge')).toBeNull()
   })
 
-  it('shows the most-popular wording exactly once on the page', () => {
+  it('labels the Crew badge as the most popular plan', () => {
     render(<App />)
-    expect(screen.queryAllByText(/most popular/i)).toHaveLength(1)
+    expect(within(cardNamed(PROMOTED)).getByTestId('popular-badge')).toHaveTextContent(/most popular/i)
   })
 
-  it('gives the highlighted card treatment to the Team plan alone', () => {
+  it('keeps the badge on Crew when annual billing is chosen', async () => {
+    const user = userEvent.setup()
     render(<App />)
-    const highlighted = planCards().filter((c) => c.getAttribute('data-featured') === 'true')
-    expect(highlighted.map(planName)).toEqual(['Team'])
+    await user.click(screen.getByTestId('billing-annual'))
+    expect(badges()).toHaveLength(1)
+    expect(within(cardNamed(PROMOTED)).queryAllByTestId('popular-badge')).toHaveLength(1)
+  })
+
+  it('still promotes only Crew after switching back to monthly billing', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(screen.getByTestId('billing-annual'))
+    await user.click(screen.getByTestId('billing-monthly'))
+    expect(badges()).toHaveLength(1)
+    expect(within(cardNamed(PROMOTED)).queryAllByTestId('popular-badge')).toHaveLength(1)
+    expect(within(cardNamed('Fleet')).queryByTestId('popular-badge')).toBeNull()
   })
 })

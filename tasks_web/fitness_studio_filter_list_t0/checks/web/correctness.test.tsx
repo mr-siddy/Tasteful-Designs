@@ -3,35 +3,40 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-const STRENGTH = ['Barbell Basics', 'Heavy Hour', 'Kettlebell Ladders']
-const CONDITIONING = ['Sunrise Intervals', 'Row & Recover', 'Hill Repeats']
-const MOBILITY = ['Deep Stretch', 'Hips & Shoulders']
-const EVERY_CLASS = [...STRENGTH, ...CONDITIONING, ...MOBILITY]
+const filters = () => within(screen.getByTestId('class-filters'))
+const list = () => screen.getByTestId('class-list')
+const cards = () => screen.queryAllByTestId('class-card')
+const trackBadges = () =>
+  cards().map((card) => (within(card).getByTestId('class-track').textContent || '').trim())
+const titleOf = (card: HTMLElement) => (card.querySelector('h3')?.textContent || '').trim()
+const titles = () => cards().map(titleOf)
 
-/** The class names currently on screen, sorted so any order of cards is accepted. */
-const shown = () =>
-  screen
-    .queryAllByTestId('class-card')
-    .map((card) => within(card).getByRole('heading', { level: 3 }).textContent)
-    .sort()
+const choose = async (user: ReturnType<typeof userEvent.setup>, label: string) => {
+  await user.click(filters().getByRole('button', { name: label }))
+}
 
-const filterButton = (label: string) =>
-  within(screen.getByTestId('class-filter')).getByRole('button', { name: label })
+const summaryCount = () => {
+  const text = screen.getByTestId('class-count').textContent || ''
+  const match = text.match(/(\d+)\s+of\s+(\d+)/)
+  return match ? Number(match[1]) : -1
+}
 
-describe('Ridgeline Studio landing — structure', () => {
-  it('renders the studio name', () => {
+describe('Tidewater landing — structure', () => {
+  it('renders the studio name as the page heading', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1, name: /ridgeline studio/i })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: /tidewater strength/i }),
+    ).toBeInTheDocument()
   })
 
-  it('offers a filter button for each type of class', () => {
+  it('offers every track as a filter above the schedule', () => {
     render(<App />)
-    const buttons = within(screen.getByTestId('class-filter')).getAllByRole('button')
-    expect(buttons.map((b) => b.textContent)).toEqual([
-      'All',
+    expect(filters().getAllByRole('button').map((b) => (b.textContent || '').trim())).toEqual([
+      'All classes',
       'Strength',
       'Conditioning',
       'Mobility',
+      'Semi-private',
     ])
   })
 
@@ -41,55 +46,65 @@ describe('Ridgeline Studio landing — structure', () => {
   })
 })
 
-describe('Ridgeline Studio schedule — the filter (the defect)', () => {
-  it('shows only the strength classes when Strength is chosen', async () => {
+describe('Tidewater schedule — the category buttons filter the list (the defect)', () => {
+  it('narrows the schedule to the strength sessions', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(filterButton('Strength'))
-    expect(shown()).toEqual([...STRENGTH].sort())
+    await choose(user, 'Strength')
+    expect(cards()).toHaveLength(4)
+    expect(trackBadges()).toEqual(['Strength', 'Strength', 'Strength', 'Strength'])
+    expect(within(list()).queryByText('Rowing Intervals')).toBeNull()
+    expect(within(list()).queryByText('Slow Flow')).toBeNull()
   })
 
-  it('shows only the conditioning classes when Conditioning is chosen', async () => {
+  it('narrows the schedule to the mobility sessions', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(filterButton('Conditioning'))
-    expect(shown()).toEqual([...CONDITIONING].sort())
+    await choose(user, 'Mobility')
+    expect([...titles()].sort()).toEqual(['Hips and Hinge', 'Shoulder Reset', 'Slow Flow'])
+    expect(within(list()).queryByText('Barbell Foundations')).toBeNull()
   })
 
-  it('shows only the mobility classes, and nothing from the other types', async () => {
+  it('narrows the schedule to the two semi-private sessions', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(filterButton('Mobility'))
-    expect(shown()).toEqual([...MOBILITY].sort())
-    expect(screen.queryByText('Barbell Basics')).toBeNull()
-    expect(screen.queryByText('Hill Repeats')).toBeNull()
+    await choose(user, 'Semi-private')
+    expect(cards()).toHaveLength(2)
+    expect(trackBadges()).toEqual(['Semi-private', 'Semi-private'])
   })
 
-  it('replaces the list when moving straight from one type to another', async () => {
+  it('replaces one track with the next instead of adding to it', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(filterButton('Strength'))
-    await user.click(filterButton('Conditioning'))
-    expect(shown()).toEqual([...CONDITIONING].sort())
-    expect(filterButton('Conditioning')).toHaveAttribute('aria-pressed', 'true')
-    expect(filterButton('Strength')).toHaveAttribute('aria-pressed', 'false')
+    await choose(user, 'Strength')
+    await choose(user, 'Conditioning')
+    expect(cards()).toHaveLength(3)
+    expect(within(list()).getByText('Engine Room')).toBeInTheDocument()
+    expect(within(list()).queryByText('Barbell Foundations')).toBeNull()
+    expect(within(list()).queryByText('Press Club')).toBeNull()
   })
 
-  it('brings the whole week back when All is chosen after filtering', async () => {
+  it('brings the whole week back when All classes is chosen', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(filterButton('Mobility'))
-    await user.click(filterButton('All'))
-    expect(shown()).toEqual([...EVERY_CLASS].sort())
+    await choose(user, 'Strength')
+    expect(cards()).toHaveLength(4)
+    await choose(user, 'All classes')
+    expect(cards()).toHaveLength(12)
+    for (const title of ['Barbell Foundations', 'Engine Room', 'Slow Flow', 'Return to Lifting']) {
+      expect(within(list()).getByText(title)).toBeInTheDocument()
+    }
   })
 
-  it('keeps the count of shown classes in step with the filter', async () => {
+  it('keeps the summary line in step with the classes on screen', async () => {
     const user = userEvent.setup()
     render(<App />)
-    expect(screen.getByTestId('class-count')).toHaveTextContent(/showing 8 of 8/i)
-    await user.click(filterButton('Conditioning'))
-    expect(screen.getByTestId('class-count')).toHaveTextContent(/showing 3 of 8/i)
-    await user.click(filterButton('All'))
-    expect(screen.getByTestId('class-count')).toHaveTextContent(/showing 8 of 8/i)
+    expect(summaryCount()).toBe(cards().length)
+    await choose(user, 'Conditioning')
+    expect(summaryCount()).toBe(cards().length)
+    await choose(user, 'Mobility')
+    expect(summaryCount()).toBe(cards().length)
+    await choose(user, 'All classes')
+    expect(summaryCount()).toBe(cards().length)
   })
 })

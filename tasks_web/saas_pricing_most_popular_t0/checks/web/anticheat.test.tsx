@@ -1,47 +1,62 @@
 import { describe, it, expect } from 'vitest'
 import { render, screen, within } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-const planCards = () => screen.getAllByTestId('plan-card')
+// Block the vacuous pass: "exactly one most-popular badge" must not be satisfied
+// by deleting plans, stripping their contents, or gutting the page around them.
+const cards = () => screen.getAllByTestId('plan-card')
 
-const planName = (card: HTMLElement) =>
-  within(card).getByRole('heading', { level: 3 }).textContent?.trim()
-
-// Block the vacuous pass: "exactly one plan is flagged" must not be satisfied by
-// dropping the other two tiers, by gutting a card, or by deleting the ribbon.
 describe('anti-cheat', () => {
-  it('keeps all three plans, named and in order', () => {
+  it('keeps all three priced plans', () => {
     render(<App />)
-    expect(planCards().map(planName)).toEqual(['Starter', 'Team', 'Scale'])
+    const names = cards().map(
+      (card) => (card.querySelector('h1, h2, h3, h4, h5, h6')?.textContent || '').trim(),
+    )
+    expect(names).toEqual(['Solo', 'Crew', 'Fleet'])
   })
 
-  it('keeps every plan its headline price', () => {
+  it('keeps a price, a feature list and a call to action on every plan', () => {
     render(<App />)
-    const prices = planCards().map((c) => within(c).getByTestId('plan-price').textContent?.trim())
-    expect(prices).toEqual(['$12', '$29', '$58'])
-  })
-
-  it('keeps at least three features on every plan', () => {
-    render(<App />)
-    for (const card of planCards()) {
-      expect(within(card).getAllByTestId('plan-feature').length).toBeGreaterThanOrEqual(3)
+    for (const card of cards()) {
+      const scope = within(card)
+      expect(scope.getByTestId('plan-price').textContent || '').toMatch(/\$\d/)
+      expect(scope.getAllByTestId('plan-feature').length).toBeGreaterThanOrEqual(5)
+      expect(scope.getAllByTestId('plan-cta').length).toBeGreaterThanOrEqual(1)
     }
   })
 
-  it('keeps a call to action on every plan', () => {
+  it('keeps the billing toggle changing every plan price', async () => {
+    const user = userEvent.setup()
     render(<App />)
-    for (const card of planCards()) {
-      const cta = within(card).getByTestId('plan-cta')
-      expect(cta.textContent?.trim().length ?? 0).toBeGreaterThan(0)
-    }
+    const prices = () => screen.getAllByTestId('plan-price').map((el) => el.textContent)
+    const monthly = prices()
+    await user.click(screen.getByTestId('billing-annual'))
+    const annual = prices()
+    expect(annual).toHaveLength(monthly.length)
+    annual.forEach((price, index) => expect(price).not.toBe(monthly[index]))
+    await user.click(screen.getByTestId('billing-monthly'))
+    expect(prices()).toEqual(monthly)
   })
 
-  it('still renders a most-popular ribbon with real wording', () => {
+  it('keeps the rest of the landing page intact', () => {
     render(<App />)
-    const badges = screen.getAllByTestId('popular-badge')
-    expect(badges.length).toBeGreaterThanOrEqual(1)
-    for (const badge of badges) {
-      expect(badge).toHaveTextContent(/most popular/i)
-    }
+    const doc = document
+    expect(doc.querySelectorAll('section, header, footer').length).toBeGreaterThanOrEqual(11)
+    expect(doc.querySelectorAll('h1, h2, h3').length).toBeGreaterThanOrEqual(24)
+    expect(doc.querySelectorAll('*').length).toBeGreaterThanOrEqual(550)
+    expect((doc.body.textContent || '').trim().split(/\s+/).length).toBeGreaterThanOrEqual(1600)
+  })
+
+  it('keeps the supporting sections of the page', () => {
+    render(<App />)
+    expect(screen.getAllByTestId('capability-card').length).toBeGreaterThanOrEqual(6)
+    expect(screen.getAllByTestId('deep-dive-block').length).toBeGreaterThanOrEqual(3)
+    expect(screen.getAllByTestId('trade-card').length).toBeGreaterThanOrEqual(4)
+    expect(screen.getAllByTestId('rollout-step').length).toBeGreaterThanOrEqual(4)
+    expect(screen.getAllByTestId('testimonial').length).toBeGreaterThanOrEqual(3)
+    expect(screen.getAllByTestId('faq-item').length).toBeGreaterThanOrEqual(6)
+    expect(screen.getAllByTestId('nav-link').length).toBeGreaterThanOrEqual(5)
+    expect(screen.getAllByTestId('footer-link').length).toBeGreaterThanOrEqual(10)
   })
 })

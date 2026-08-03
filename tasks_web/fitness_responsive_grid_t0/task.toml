@@ -1,6 +1,6 @@
 [metadata]
 name = "fitness_responsive_grid_t0"
-description = "A fitness studio class grid is fixed at three columns and doesn't collapse on mobile; it should be one column on small screens and three on desktop."
+description = "A fitness studio's class timetable is locked into three narrow columns on phones; the card grid should stack to one column on small screens and open into several columns from the md breakpoint up."
 tier = 0
 parent = ""
 domain = "fitness_responsive_grid"

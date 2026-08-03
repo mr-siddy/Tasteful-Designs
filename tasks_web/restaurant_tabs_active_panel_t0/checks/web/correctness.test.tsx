@@ -4,17 +4,26 @@ import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
 const tabs = () => screen.getAllByRole('tab')
-const panels = () => screen.queryAllByTestId('menu-panel')
+const openPanels = () => screen.queryAllByRole('tabpanel')
+const selectedTabs = () => tabs().filter((tab) => tab.getAttribute('aria-selected') === 'true')
 
-describe('Saffron Row landing — structure', () => {
-  it('renders the restaurant name', () => {
+/** The one menu a guest can actually read right now. */
+function visiblePanel() {
+  const open = openPanels()
+  expect(open).toHaveLength(1)
+  return open[0]
+}
+
+describe('Casa Marisol landing — structure', () => {
+  it('renders the restaurant behind a top-level heading', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1, name: /saffron row/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1 })).toBeInTheDocument()
+    expect(screen.getAllByText(/casa marisol/i).length).toBeGreaterThan(0)
   })
 
-  it('offers the three menus as tabs', () => {
+  it('offers the four menus as tabs', () => {
     render(<App />)
-    expect(tabs().map((t) => t.textContent)).toEqual(['Lunch', 'Dinner', 'Drinks'])
+    expect(tabs().map((tab) => tab.textContent)).toEqual(['Lunch', 'Dinner', 'Bar', 'Sunday Rice'])
   })
 
   it('renders a footer landmark', () => {
@@ -23,48 +32,52 @@ describe('Saffron Row landing — structure', () => {
   })
 })
 
-describe('Saffron Row menu — one menu at a time (the defect)', () => {
-  it('shows exactly one menu panel on first load', () => {
+describe('Casa Marisol menus — one menu at a time', () => {
+  it('shows exactly one menu on first load', () => {
     render(<App />)
-    expect(panels()).toHaveLength(1)
+    expect(openPanels()).toHaveLength(1)
   })
 
-  it('starts on the lunch menu', () => {
+  it('opens on the lunch menu', () => {
     render(<App />)
-    const panel = screen.getByTestId('menu-panel')
-    expect(within(panel).getByText(/za'atar flatbread/i)).toBeInTheDocument()
-    expect(within(panel).queryByText(/lamb shoulder/i)).toBeNull()
+    const panel = visiblePanel()
+    expect(within(panel).getByText(/fideuà of the day/i)).toBeInTheDocument()
+    expect(within(panel).queryByText(/lamb shoulder from the ember box/i)).toBeNull()
   })
 
-  it('shows only the dinner menu after choosing Dinner', async () => {
+  it('marks exactly the lunch tab as selected on first load', () => {
+    render(<App />)
+    expect(selectedTabs()).toHaveLength(1)
+    expect(selectedTabs()[0]).toHaveTextContent('Lunch')
+  })
+
+  it('shows only the second menu after choosing the second tab', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(tabs()[1])
+    const panel = visiblePanel()
+    expect(within(panel).getByRole('heading', { name: 'Dinner' })).toBeInTheDocument()
+    expect(within(panel).getByText(/lamb shoulder from the ember box/i)).toBeInTheDocument()
+    expect(within(panel).queryByText(/fideuà of the day/i)).toBeNull()
+  })
+
+  it('marks exactly the second tab as selected after choosing it', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await user.click(tabs()[1])
+    expect(selectedTabs()).toHaveLength(1)
+    expect(selectedTabs()[0]).toHaveTextContent('Dinner')
+  })
+
+  it('replaces the open menu instead of stacking another one below it', async () => {
     const user = userEvent.setup()
     render(<App />)
     await user.click(screen.getByRole('tab', { name: 'Dinner' }))
-    expect(panels()).toHaveLength(1)
-    const panel = screen.getByTestId('menu-panel')
-    expect(within(panel).getByText(/lamb shoulder/i)).toBeInTheDocument()
-    expect(within(panel).queryByText(/za'atar flatbread/i)).toBeNull()
-  })
-
-  it('replaces the dinner menu when Drinks is chosen', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    await user.click(screen.getByRole('tab', { name: 'Dinner' }))
-    await user.click(screen.getByRole('tab', { name: 'Drinks' }))
-    expect(panels()).toHaveLength(1)
-    const panel = screen.getByTestId('menu-panel')
-    expect(within(panel).getByText(/fig leaf spritz/i)).toBeInTheDocument()
-    expect(within(panel).queryByText(/lamb shoulder/i)).toBeNull()
-  })
-
-  it('marks exactly the chosen tab as selected', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    const selected = () => tabs().filter((t) => t.getAttribute('aria-selected') === 'true')
-    expect(selected()).toHaveLength(1)
-    expect(selected()[0]).toHaveTextContent('Lunch')
-    await user.click(screen.getByRole('tab', { name: 'Dinner' }))
-    expect(selected()).toHaveLength(1)
-    expect(selected()[0]).toHaveTextContent('Dinner')
+    await user.click(screen.getByRole('tab', { name: 'Sunday Rice' }))
+    const panel = visiblePanel()
+    expect(within(panel).getByText(/arròs negre/i)).toBeInTheDocument()
+    expect(within(panel).queryByText(/lamb shoulder from the ember box/i)).toBeNull()
+    expect(selectedTabs()).toHaveLength(1)
+    expect(selectedTabs()[0]).toHaveTextContent('Sunday Rice')
   })
 })

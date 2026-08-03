@@ -1,6 +1,6 @@
 [metadata]
 name = "dental_clinic_form_validation_t0"
-description = "A dental clinic contact form confirms bookings without validating input; it should gate on required, valid fields and show errors otherwise."
+description = "A dental clinic's appointment request form sends an empty or malformed request straight to the thank-you panel; incomplete input should be refused with a message beside each field that needs fixing."
 tier = 0
 parent = ""
 domain = "dental_clinic_form_validation"

@@ -1,20 +1,39 @@
-import { FAQ } from './components/FAQ'
+import { SiteHeader } from './components/SiteHeader'
+import { Hero } from './components/Hero'
+import { TrustBar } from './components/TrustBar'
+import { HearthMenu } from './components/HearthMenu'
+import { FireStory } from './components/FireStory'
+import { ChefsCounter } from './components/ChefsCounter'
+import { ProducerMap } from './components/ProducerMap'
+import { EveningFlow } from './components/EveningFlow'
+import { NetLoft } from './components/NetLoft'
+import { CellarPours } from './components/CellarPours'
+import { GuestReviews } from './components/GuestReviews'
+import { FaqAccordion } from './components/FaqAccordion'
+import { VisitDetails } from './components/VisitDetails'
+import { ClosingCta } from './components/ClosingCta'
+import { SiteFooter } from './components/SiteFooter'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-[#FAF6EF] text-[#171310] antialiased">
+      <SiteHeader />
       <main>
-        <section id="hero" className="mx-auto max-w-3xl px-4 py-16 text-center">
-          <h1 className="text-4xl font-bold">Olive & Thyme</h1>
-          <p className="mt-2 text-slate-600">Seasonal Mediterranean plates in the heart of town.</p>
-        </section>
-        <FAQ />
+        <Hero />
+        <TrustBar />
+        <HearthMenu />
+        <FireStory />
+        <ChefsCounter />
+        <ProducerMap />
+        <EveningFlow />
+        <NetLoft />
+        <CellarPours />
+        <GuestReviews />
+        <FaqAccordion />
+        <VisitDetails />
+        <ClosingCta />
       </main>
-      <footer className="border-t">
-        <div className="mx-auto max-w-3xl px-4 py-8 text-sm text-slate-500">
-          © 2026 Olive &amp; Thyme.
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   )
 }

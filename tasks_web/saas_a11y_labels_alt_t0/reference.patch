@@ -1,0 +1,213 @@
+--- a/src/components/ProductGallery.tsx
++++ b/src/components/ProductGallery.tsx
+@@ -3,6 +3,10 @@
+ type Screen = {
+   id: string
+   name: string
++  /** what the large featured screenshot announces */
++  stageAlt: string
++  /** what the small screenshot in the grid below announces */
++  thumbAlt: string
+   summary: string
+   accent: string
+   rows: { label: string; meta: string }[]
+@@ -12,6 +16,9 @@
+   {
+     id: 'timeline',
+     name: 'Deploy timeline',
++    stageAlt:
++      'Halyard deploy timeline: six services released this week, each row showing its approver and how long the change took',
++    thumbAlt: 'The Halyard deploy timeline screen',
+     summary:
+       'Every release across the estate on one horizontal axis, coloured by environment. Hovering a change opens the approval that let it through.',
+     accent: '#4ADEC0',
+@@ -26,6 +33,9 @@
+   {
+     id: 'queue',
+     name: 'Approval queue',
++    stageAlt:
++      'Halyard approval queue: three changes waiting, each showing its requester, blast radius and policy verdict',
++    thumbAlt: 'The Halyard approval queue screen',
+     summary:
+       'What a reviewer sees when a change lands on them: the diff, the services it touches, and the last four deploys of the same component.',
+     accent: '#F2A93B',
+@@ -40,6 +50,9 @@
+   {
+     id: 'evidence',
+     name: 'Evidence bundle',
++    stageAlt:
++      'Halyard evidence bundle: signed approval records for the March release quarter, ready to export as one document',
++    thumbAlt: 'The Halyard evidence bundle export screen',
+     summary:
+       'The quarter, assembled continuously rather than the week before the audit. Every line is signed and traceable back to a commit.',
+     accent: '#4ADEC0',
+@@ -54,6 +67,9 @@
+   {
+     id: 'radius',
+     name: 'Blast-radius preview',
++    stageAlt:
++      'Halyard blast-radius preview: a payments change mapped to four downstream services and two datasets, one inside a freeze',
++    thumbAlt: 'The Halyard blast-radius preview screen',
+     summary:
+       'Resolved from your service graph and data contracts at request time, so a reviewer never has to guess what a change can reach.',
+     accent: '#F2A93B',
+@@ -68,6 +84,9 @@
+   {
+     id: 'freeze',
+     name: 'Freeze calendar',
++    stageAlt:
++      'Halyard freeze calendar: the year-end change freeze marked across the payments and ledger estates with two exemptions',
++    thumbAlt: 'The Halyard freeze calendar screen',
+     summary:
+       'Freezes are declared once and enforced everywhere, with exemptions granted per service and logged as break-glass records.',
+     accent: '#4ADEC0',
+@@ -147,6 +166,7 @@
+             <button
+               type="button"
+               data-testid="gallery-nav"
++              aria-label="Show the previous screen"
+               onClick={() => step(-1)}
+               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-slate-300 transition hover:border-white/40 hover:text-white"
+             >
+@@ -158,6 +178,7 @@
+             <button
+               type="button"
+               data-testid="gallery-nav"
++              aria-label="Show the next screen"
+               onClick={() => step(1)}
+               className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-slate-300 transition hover:border-white/40 hover:text-white"
+             >
+@@ -170,7 +191,7 @@
+           <img
+             data-testid="gallery-stage"
+             src={screenshot(screen)}
+-            alt=""
++            alt={screen.stageAlt}
+             width={640}
+             height={400}
+             className="w-full rounded-2xl"
+@@ -192,7 +213,7 @@
+                 <img
+                   data-testid="tour-shot"
+                   src={screenshot(item)}
+-                  alt=""
++                  alt={item.thumbAlt}
+                   width={640}
+                   height={400}
+                   className="w-full rounded-lg"
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -10,6 +10,8 @@
+ 
+ type Utility = {
+   id: string
++  /** what a screen reader should announce for this icon-only control */
++  name: string
+   icon: JSX.Element
+   heading: string
+   body: string
+@@ -51,6 +53,7 @@
+ const UTILITIES: Utility[] = [
+   {
+     id: 'search',
++    name: 'Search the Halyard docs',
+     icon: SearchIcon,
+     heading: 'Search the docs',
+     body:
+@@ -58,6 +61,7 @@
+   },
+   {
+     id: 'changelog',
++    name: "What's new in Halyard",
+     icon: ChangelogIcon,
+     heading: 'Halyard 4.2 — shipped 14 March',
+     body:
+@@ -65,6 +69,7 @@
+   },
+   {
+     id: 'status',
++    name: 'Halyard system status',
+     icon: StatusIcon,
+     heading: 'Control plane status',
+     body:
+@@ -72,6 +77,7 @@
+   },
+   {
+     id: 'account',
++    name: 'Your Halyard account',
+     icon: AccountIcon,
+     heading: 'Account and workspaces',
+     body:
+@@ -114,6 +120,7 @@
+               key={utility.id}
+               type="button"
+               data-testid="header-icon-button"
++              aria-label={utility.name}
+               aria-expanded={openUtility === utility.id}
+               onClick={() => setOpenUtility((current) => (current === utility.id ? null : utility.id))}
+               className={`flex h-9 w-9 items-center justify-center rounded-lg border transition ${
+--- a/src/components/TrialSignupForm.tsx
++++ b/src/components/TrialSignupForm.tsx
+@@ -64,7 +64,7 @@
+             }}
+           >
+             <div>
+-              <label className="block text-sm font-medium text-slate-300">
++              <label htmlFor="signup-email" className="block text-sm font-medium text-slate-300">
+                 Work email
+               </label>
+               <input
+@@ -78,7 +78,7 @@
+ 
+             <div className="grid gap-5 sm:grid-cols-2">
+               <div>
+-                <label className="block text-sm font-medium text-slate-300">
++                <label htmlFor="signup-name" className="block text-sm font-medium text-slate-300">
+                   Full name
+                 </label>
+                 <input
+@@ -90,7 +90,7 @@
+                 />
+               </div>
+               <div>
+-                <label className="block text-sm font-medium text-slate-300">
++                <label htmlFor="signup-company" className="block text-sm font-medium text-slate-300">
+                   Company
+                 </label>
+                 <input
+@@ -105,7 +105,7 @@
+ 
+             <div className="grid gap-5 sm:grid-cols-2">
+               <div>
+-                <label className="block text-sm font-medium text-slate-300">
++                <label htmlFor="signup-scope" className="block text-sm font-medium text-slate-300">
+                   Services to start with
+                 </label>
+                 <select
+@@ -121,7 +121,7 @@
+                 </select>
+               </div>
+               <div>
+-                <label className="block text-sm font-medium text-slate-300">
++                <label htmlFor="signup-regime" className="block text-sm font-medium text-slate-300">
+                   Compliance regime
+                 </label>
+                 <select
+@@ -139,7 +139,7 @@
+             </div>
+ 
+             <div>
+-              <label className="block text-sm font-medium text-slate-300">
++              <label htmlFor="signup-goal" className="block text-sm font-medium text-slate-300">
+                 What you want to automate first
+               </label>
+               <textarea
+@@ -159,7 +159,7 @@
+                 data-testid="signup-field"
+                 className="mt-0.5 h-4 w-4 flex-none rounded border-white/20 bg-[#0F1B2D] accent-[#F2A93B]"
+               />
+-              <label className="text-sm leading-snug text-slate-400">
++              <label htmlFor="signup-digest" className="text-sm leading-snug text-slate-400">
+                 Send me the monthly release-engineering digest
+               </label>
+             </div>

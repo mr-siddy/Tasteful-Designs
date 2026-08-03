@@ -1,0 +1,27 @@
+[metadata]
+name = "saas_a11y_labels_alt_t0"
+description = "A SaaS landing page is silent to screen readers: its product screenshots carry no alt text, its icon-only controls announce as unnamed buttons, and its signup fields are not tied to the labels printed beside them; every image, icon control and field should announce what it is."
+tier = 0
+parent = ""
+domain = "saas_a11y_labels_alt"
+archetype = "repair"
+kind = "frontend"
+seed = "a11y_labels_alt"
+industry = "saas"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

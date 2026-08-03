@@ -1,6 +1,6 @@
 [metadata]
 name = "fitness_studio_filter_list_t0"
-description = "A fitness studio's class schedule shows the previously chosen type instead of the one just pressed, and All leaves only the last narrow slice on screen; each type button should immediately show only its own classes and All should restore the full week."
+description = "A fitness studio's class schedule ignores its own track buttons and keeps all twelve sessions on screen; choosing a track should leave only that track's classes and All classes should restore the full week."
 tier = 0
 parent = ""
 domain = "fitness_studio_filter_list"

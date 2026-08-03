@@ -1,22 +1,33 @@
-import { useState } from 'react'
-import { Nav } from './components/Nav'
-import { MobileMenu } from './components/MobileMenu'
-import { Hero, Features, Pricing, FAQ, Footer } from './components/Sections'
+import ClosingCta from './components/ClosingCta'
+import DeepDive from './components/DeepDive'
+import Faq from './components/Faq'
+import FeatureGrid from './components/FeatureGrid'
+import Hero from './components/Hero'
+import HowItWorks from './components/HowItWorks'
+import Integrations from './components/Integrations'
+import Pricing from './components/Pricing'
+import SiteFooter from './components/SiteFooter'
+import SiteHeader from './components/SiteHeader'
+import Testimonials from './components/Testimonials'
+import TrustBar from './components/TrustBar'
 
 export default function App() {
-  const [menuOpen, setMenuOpen] = useState(false)
-  const closeMenu = () => setMenuOpen(false)
   return (
-    <div className="min-h-screen bg-white text-slate-900">
-      <Nav menuOpen={menuOpen} onToggle={() => setMenuOpen((o) => !o)} />
-      <MobileMenu open={menuOpen} onNavigate={closeMenu} />
+    <div className="min-h-screen bg-slate-950 font-sans text-slate-100 antialiased">
+      <SiteHeader />
       <main>
         <Hero />
-        <Features />
+        <TrustBar />
+        <FeatureGrid />
+        <DeepDive />
+        <HowItWorks />
+        <Integrations />
         <Pricing />
-        <FAQ />
+        <Testimonials />
+        <Faq />
+        <ClosingCta />
       </main>
-      <Footer />
+      <SiteFooter />
     </div>
   )
 }

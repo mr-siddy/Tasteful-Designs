@@ -1,10 +1,21 @@
-On a phone, the top navigation collapses into a menu button. Tapping that button
-opens a list of links, and choosing one does jump to the right section of the
-page — but the menu stays open on top of everything, covering the content the
-visitor just navigated to. They then have to find and tap the button again to
-get the menu out of the way.
+Almost everyone who reaches our site does it from a phone in a truck or at a
+kitchen table, and on a phone the top of the page is a hamburger button that
+slides the navigation down over everything — the five destinations, the demo
+button and the support number.
 
-It should behave the way people expect a mobile menu to: once a visitor picks a
-destination from the menu, the menu closes on its own. Opening and closing the
-menu with the button should keep working exactly as it does now, and nothing
-about the desktop layout should change.
+The complaint we keep getting is that it will not get out of the way. A visitor
+opens it, taps Pricing, and the navigation is still sitting there covering the
+page they just asked for, dimmed backdrop and all. As far as they can tell
+nothing happened, so a lot of them tap it a second and a third time, and the ones
+who work it out have to hunt for the small close button in the corner before they
+can read anything. One owner told us he assumed the whole site was broken and
+called the office instead.
+
+Choosing a destination in that panel should take you to it and put the panel
+away, the same as it would on any other site — the page underneath uncovered and
+the hamburger back to its usual state, ready to open the navigation again if
+someone wants it. That goes for the demo button inside the panel too.
+
+Nothing else about the site should change: the same destinations in the same
+order, the same wording, the same behaviour at desktop width, and the rest of the
+page exactly as it is.

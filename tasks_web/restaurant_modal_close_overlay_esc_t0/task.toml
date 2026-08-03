@@ -1,6 +1,6 @@
 [metadata]
 name = "restaurant_modal_close_overlay_esc_t0"
-description = "A restaurant booking dialog can only be dismissed with its × button; clicking the dimmed overlay behind it or pressing Escape should close it too."
+description = "The reservation panel on a supper club landing page can only be dismissed with its × button; clicking the dimmed page behind it or pressing Escape should close it too."
 tier = 0
 parent = ""
 domain = "restaurant_modal_close_overlay_esc"

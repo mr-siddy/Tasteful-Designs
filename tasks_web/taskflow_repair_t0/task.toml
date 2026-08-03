@@ -1,9 +1,9 @@
 [metadata]
 name = "taskflow_repair_t0"
-description = "A SaaS landing page's mobile menu does not close after a nav link is tapped; it should dismiss itself once a destination is chosen."
+description = "On a phone the navigation panel stays open over the page after a destination is tapped; choosing a destination should dismiss the panel and hand the page back."
 tier = 0
 parent = ""
-domain = "taskflow"
+domain = "taskflow_repair"
 archetype = "repair"
 kind = "frontend"
 seed = "mobile_menu_close_on_navigate"

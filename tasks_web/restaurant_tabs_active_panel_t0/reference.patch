@@ -1,63 +1,87 @@
 --- a/src/components/MenuTabs.tsx
 +++ b/src/components/MenuTabs.tsx
-@@ -35,6 +35,7 @@
+@@ -140,6 +140,7 @@
  
  export function MenuTabs() {
-   const [active, setActive] = useState(0)
-+  const menu = MENUS[active]
+   const [activeId, setActiveId] = useState(MENUS[0].id)
++  const activeMenu = MENUS.find((menu) => menu.id === activeId) ?? MENUS[0]
  
    return (
-     <section id="menu" className="mx-auto max-w-3xl px-4 py-16">
-@@ -56,7 +57,7 @@
-             role="tab"
-             id={`menu-tab-${m.id}`}
-             data-testid="menu-tab"
--            aria-selected={true}
-+            aria-selected={i === active}
-             aria-controls={`menu-panel-${m.id}`}
-             onClick={() => setActive(i)}
-             className={
-@@ -70,27 +71,23 @@
-         ))}
-       </div>
+     <section id="menus" data-testid="menu-section" className="bg-stone-950 py-24 text-stone-100">
+@@ -172,7 +173,7 @@
+                 role="tab"
+                 id={`menu-tab-${menu.id}`}
+                 data-testid="menu-tab"
+-                aria-selected={true}
++                aria-selected={selected}
+                 aria-controls={`menu-panel-${menu.id}`}
+                 onClick={() => setActiveId(menu.id)}
+                 className={
+@@ -187,39 +188,35 @@
+           })}
+         </div>
  
--      {/* One panel per menu, laid out down the section. */}
--      {MENUS.map((m) => (
--        <div
--          key={m.id}
--          role="tabpanel"
--          id={`menu-panel-${m.id}`}
--          aria-labelledby={`menu-tab-${m.id}`}
--          data-testid="menu-panel"
--          className="mt-8 divide-y"
--        >
--          {m.dishes.map((d) => (
--            <div key={d.name} data-testid="menu-dish" className="flex justify-between gap-6 py-4">
--              <div>
--                <h3 className="font-medium">{d.name}</h3>
--                <p className="mt-1 text-sm text-slate-600">{d.note}</p>
--              </div>
--              <span className="whitespace-nowrap text-slate-700">{d.price}</span>
-+      <div
-+        role="tabpanel"
-+        id={`menu-panel-${menu.id}`}
-+        aria-labelledby={`menu-tab-${menu.id}`}
-+        data-testid="menu-panel"
-+        className="mt-8 divide-y"
-+      >
-+        {menu.dishes.map((d) => (
-+          <div key={d.name} data-testid="menu-dish" className="flex justify-between gap-6 py-4">
-+            <div>
-+              <h3 className="font-medium">{d.name}</h3>
-+              <p className="mt-1 text-sm text-slate-600">{d.note}</p>
-             </div>
--          ))}
--        </div>
--      ))}
-+            <span className="whitespace-nowrap text-slate-700">{d.price}</span>
-+          </div>
-+        ))}
-+      </div>
-     </section>
-   )
- }
+-        {/* Each menu is set as its own card, running down the section. */}
+-        {MENUS.map((menu) => (
+-          <div
+-            key={menu.id}
+-            role="tabpanel"
+-            id={`menu-panel-${menu.id}`}
+-            aria-labelledby={`menu-tab-${menu.id}`}
+-            data-testid="menu-panel"
+-            className="mt-10 rounded-3xl border border-stone-800 bg-stone-900/60 p-8 md:p-12"
+-          >
+-            <div className="flex flex-col gap-2 border-b border-stone-800 pb-6 md:flex-row md:items-end md:justify-between">
+-              <h3 className="font-serif text-2xl font-semibold text-amber-400">{menu.label}</h3>
+-              <p className="text-sm uppercase tracking-widest text-stone-400">{menu.hours}</p>
+-            </div>
+-            <p className="mt-6 text-stone-300">{menu.blurb}</p>
+-
+-            <ul className="mt-4 divide-y divide-stone-800">
+-              {menu.dishes.map((dish) => (
+-                <li
+-                  key={dish.name}
+-                  data-testid="menu-dish"
+-                  className="flex flex-col gap-2 py-6 sm:flex-row sm:items-start sm:justify-between sm:gap-10"
+-                >
+-                  <div>
+-                    <h4 className="font-medium text-stone-100">{dish.name}</h4>
+-                    <p className="mt-1.5 text-sm leading-relaxed text-stone-400">{dish.note}</p>
+-                  </div>
+-                  <span className="whitespace-nowrap font-medium text-amber-400">{dish.price}</span>
+-                </li>
+-              ))}
+-            </ul>
++        <div
++          role="tabpanel"
++          id={`menu-panel-${activeMenu.id}`}
++          aria-labelledby={`menu-tab-${activeMenu.id}`}
++          data-testid="menu-panel"
++          className="mt-10 rounded-3xl border border-stone-800 bg-stone-900/60 p-8 md:p-12"
++        >
++          <div className="flex flex-col gap-2 border-b border-stone-800 pb-6 md:flex-row md:items-end md:justify-between">
++            <h3 className="font-serif text-2xl font-semibold text-amber-400">{activeMenu.label}</h3>
++            <p className="text-sm uppercase tracking-widest text-stone-400">{activeMenu.hours}</p>
+           </div>
+-        ))}
++          <p className="mt-6 text-stone-300">{activeMenu.blurb}</p>
++
++          <ul className="mt-4 divide-y divide-stone-800">
++            {activeMenu.dishes.map((dish) => (
++              <li
++                key={dish.name}
++                data-testid="menu-dish"
++                className="flex flex-col gap-2 py-6 sm:flex-row sm:items-start sm:justify-between sm:gap-10"
++              >
++                <div>
++                  <h4 className="font-medium text-stone-100">{dish.name}</h4>
++                  <p className="mt-1.5 text-sm leading-relaxed text-stone-400">{dish.note}</p>
++                </div>
++                <span className="whitespace-nowrap font-medium text-amber-400">{dish.price}</span>
++              </li>
++            ))}
++          </ul>
++        </div>
+ 
+         <p className="mt-8 text-center text-sm text-stone-500">
+           Prices include the fire, not the tip. Menus change when the market changes, so treat this

@@ -3,54 +3,99 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-describe('restaurant page — structure', () => {
+const questions = () => screen.getAllByTestId('faq-question')
+const answers = () => screen.queryAllByTestId('faq-answer')
+const expandedQuestions = () =>
+  questions().filter((q) => q.getAttribute('aria-expanded') === 'true')
+
+describe('Cinder & Salt landing — structure', () => {
   it('renders the restaurant name', () => {
     render(<App />)
-    expect(screen.getByRole('heading', { level: 1, name: /olive & thyme/i })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { level: 1, name: /cinder & salt/i })).toBeInTheDocument()
   })
-  it('renders an FAQ with at least three questions', () => {
+
+  it('renders an FAQ of at least seven questions, collapsed on load', () => {
     render(<App />)
-    expect(screen.getAllByTestId('faq-question').length).toBeGreaterThanOrEqual(3)
+    expect(questions().length).toBeGreaterThanOrEqual(7)
+    expect(answers()).toHaveLength(0)
   })
-  it('renders a footer', () => {
+
+  it('renders a footer landmark', () => {
     render(<App />)
     expect(screen.getByRole('contentinfo')).toBeInTheDocument()
   })
-  it('opening a question reveals its answer', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    expect(screen.queryByTestId('faq-answer')).toBeNull()
-    await user.click(screen.getAllByTestId('faq-question')[0])
-    expect(screen.getByTestId('faq-answer')).toBeInTheDocument()
-  })
 })
 
-describe('restaurant FAQ — single-open (the defect)', () => {
-  it('keeps only one answer open when a second question is clicked', async () => {
+describe('Cinder & Salt FAQ — one answer at a time (the defect)', () => {
+  it('shows exactly one answer once a second question is opened', async () => {
     const user = userEvent.setup()
     render(<App />)
-    const qs = screen.getAllByTestId('faq-question')
+    const qs = questions()
     await user.click(qs[0])
     await user.click(qs[1])
-    expect(screen.getAllByTestId('faq-answer')).toHaveLength(1)
+    expect(answers()).toHaveLength(1)
   })
-  it('opening a third question still leaves exactly one open', async () => {
+
+  it('still shows exactly one answer once a third question is opened', async () => {
     const user = userEvent.setup()
     render(<App />)
-    const qs = screen.getAllByTestId('faq-question')
+    const qs = questions()
     await user.click(qs[0])
     await user.click(qs[1])
     await user.click(qs[2])
-    expect(screen.getAllByTestId('faq-answer')).toHaveLength(1)
+    expect(answers()).toHaveLength(1)
   })
-  it('opening a second question closes the first', async () => {
+
+  it('replaces the open answer instead of stacking the new one beneath it', async () => {
     const user = userEvent.setup()
     render(<App />)
-    const qs = screen.getAllByTestId('faq-question')
+    const qs = questions()
     await user.click(qs[0])
-    const firstAnswer = screen.getByTestId('faq-answer').textContent
+    const firstAnswer = screen.getByTestId('faq-answer').textContent ?? ''
+    expect(firstAnswer.length).toBeGreaterThan(0)
     await user.click(qs[1])
-    const openAnswer = screen.getByTestId('faq-answer').textContent
-    expect(openAnswer).not.toEqual(firstAnswer)
+    expect(answers().map((a) => a.textContent ?? '')).not.toContain(firstAnswer)
+  })
+
+  it('marks exactly one question expanded after two have been opened', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const qs = questions()
+    await user.click(qs[0])
+    await user.click(qs[3])
+    expect(expandedQuestions()).toHaveLength(1)
+  })
+
+  it('keeps a single answer on screen while every question is opened in turn', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    for (const question of questions()) {
+      await user.click(question)
+      expect(answers()).toHaveLength(1)
+    }
+  })
+
+  it('reopening an earlier question brings back that answer on its own', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const qs = questions()
+    await user.click(qs[1])
+    const secondAnswer = screen.getByTestId('faq-answer').textContent ?? ''
+    await user.click(qs[4])
+    await user.click(qs[1])
+    const open = answers()
+    expect(open).toHaveLength(1)
+    expect(open[0].textContent).toEqual(secondAnswer)
+  })
+
+  it('leaves nothing expanded once the open question is clicked shut', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const qs = questions()
+    await user.click(qs[2])
+    await user.click(qs[5])
+    await user.click(qs[5])
+    expect(answers()).toHaveLength(0)
+    expect(expandedQuestions()).toHaveLength(0)
   })
 })

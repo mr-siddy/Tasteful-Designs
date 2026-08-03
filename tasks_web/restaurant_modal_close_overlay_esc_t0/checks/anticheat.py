@@ -1,10 +1,10 @@
-"""Anti-cheat gate: required components present + the reservation dialog really renders."""
+"""Anti-cheat gate: required components present + the reservation panel really renders."""
 
 from pathlib import Path
 
 from _vitest import run_vitest
 
-REQUIRED = ["src/App.tsx", "src/components/ReservationModal.tsx"]
+REQUIRED = ["src/App.tsx", "src/components/ReserveDialog.tsx"]
 
 
 def check(repo_path, task_dir, reference_repo_path=None):
@@ -12,9 +12,9 @@ def check(repo_path, task_dir, reference_repo_path=None):
     for rel in REQUIRED:
         if not (repo / rel).is_file():
             return {"passed": False, "message": f"required file removed: {rel}"}
-    src = (repo / "src/components/ReservationModal.tsx").read_text()
-    if "reservation-overlay" not in src:
-        return {"passed": False, "message": "reservation dialog overlay removed"}
+    src = (repo / "src/components/ReserveDialog.tsx").read_text()
+    if "reserve-overlay" not in src:
+        return {"passed": False, "message": "reservation panel removed"}
     passed, total, tail = run_vitest(repo, task_dir, "anticheat.test.tsx")
     ok = total > 0 and passed == total
     return {"passed": ok, "message": "anticheat ok" if ok else f"anticheat {passed}/{total}: {tail}"}

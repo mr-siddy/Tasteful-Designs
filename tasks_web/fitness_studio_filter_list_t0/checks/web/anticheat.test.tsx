@@ -3,58 +3,55 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-// Block the vacuous pass: "only the matching classes are on screen" must not be
-// satisfiable by deleting classes, deleting the filter buttons, or rendering
-// stripped-down cards behind them.
-const filterButton = (label: string) =>
-  within(screen.getByTestId('class-filter')).getByRole('button', { name: label })
+// Block the vacuous pass: "only the matching classes render" must not be
+// satisfiable by rendering no classes, dropping tracks, or gutting the page.
+const TRACK_LABELS = ['All classes', 'Strength', 'Conditioning', 'Mobility', 'Semi-private']
+
+const filters = () => within(screen.getByTestId('class-filters'))
+const cards = () => screen.queryAllByTestId('class-card')
 
 describe('anti-cheat', () => {
-  it('keeps all four filter buttons', () => {
+  it('keeps every track filter on the page', () => {
     render(<App />)
-    const buttons = within(screen.getByTestId('class-filter')).getAllByRole('button')
-    expect(buttons.map((b) => b.textContent)).toEqual([
-      'All',
-      'Strength',
-      'Conditioning',
-      'Mobility',
-    ])
+    expect(filters().getAllByRole('button').map((b) => (b.textContent || '').trim())).toEqual(
+      TRACK_LABELS,
+    )
   })
 
-  it('still lists the full eight-class week', () => {
+  it('still lists the full week of twelve sessions on first load', () => {
     render(<App />)
-    expect(screen.getAllByTestId('class-card')).toHaveLength(8)
-    for (const name of [
-      'Barbell Basics',
-      'Sunrise Intervals',
-      'Heavy Hour',
-      'Deep Stretch',
-      'Row & Recover',
-      'Hips & Shoulders',
-      'Kettlebell Ladders',
-      'Hill Repeats',
-    ]) {
-      expect(screen.getByText(name)).toBeInTheDocument()
-    }
+    expect(cards()).toHaveLength(12)
+    expect(screen.getByTestId('class-count')).toHaveTextContent(/of\s+12\s+sessions/i)
   })
 
-  it('every type still reveals real classes', async () => {
+  it('every track still reveals real classes behind it', async () => {
     const user = userEvent.setup()
     render(<App />)
-    for (const label of ['Strength', 'Conditioning', 'Mobility']) {
-      await user.click(filterButton(label))
-      expect(screen.getAllByTestId('class-card').length).toBeGreaterThanOrEqual(2)
+    for (const label of TRACK_LABELS) {
+      await user.click(filters().getByRole('button', { name: label }))
+      const visible = cards()
+      expect(visible.length).toBeGreaterThanOrEqual(2)
+      for (const card of visible) {
+        expect(within(card).getByTestId('class-track').textContent).toBeTruthy()
+        expect((card.querySelector('h3')?.textContent || '').length).toBeGreaterThan(3)
+        expect((card.textContent || '').length).toBeGreaterThan(120)
+      }
     }
   })
 
-  it('keeps the day, time and coach on every card', () => {
+  it('keeps the coach, time and booking detail on each class', () => {
     render(<App />)
-    for (const card of screen.getAllByTestId('class-card')) {
-      expect(card.textContent).toMatch(/\d{1,2}:\d{2}\s*(AM|PM)/)
-      expect(card.textContent).toMatch(/with\s+[A-Z][a-z]+\s+[A-Z][a-z]+/)
-    }
-    const barbell = screen.getByText('Barbell Basics').closest('[data-testid="class-card"]')!
-    expect(barbell).toHaveTextContent('Nadia Fierro')
-    expect(barbell).toHaveTextContent('Mon')
+    expect(screen.getByText('Barbell Foundations')).toBeInTheDocument()
+    expect(screen.getAllByText('Reserve a place').length).toBeGreaterThanOrEqual(12)
+    expect(screen.getByText(/Monday · 6:00 AM · 60 min/)).toBeInTheDocument()
+  })
+
+  it('keeps the page intact', () => {
+    render(<App />)
+    const doc = document
+    expect(doc.querySelectorAll('section, header, footer').length).toBeGreaterThanOrEqual(11)
+    expect(doc.querySelectorAll('h1, h2, h3').length).toBeGreaterThanOrEqual(40)
+    expect(doc.querySelectorAll('a, button, input, select').length).toBeGreaterThanOrEqual(40)
+    expect((doc.body.textContent || '').split(/\s+/).length).toBeGreaterThanOrEqual(2200)
   })
 })

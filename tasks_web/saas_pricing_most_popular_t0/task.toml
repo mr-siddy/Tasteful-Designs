@@ -1,6 +1,6 @@
 [metadata]
 name = "saas_pricing_most_popular_t0"
-description = "A SaaS pricing section puts the most-popular ribbon and highlight treatment on all three plans; only the intended middle tier should carry it."
+description = "A SaaS pricing section puts the most-popular badge and highlight on the cheapest and most expensive plans; exactly one plan — the middle Crew tier — should carry it."
 tier = 0
 parent = ""
 domain = "saas_pricing_most_popular"

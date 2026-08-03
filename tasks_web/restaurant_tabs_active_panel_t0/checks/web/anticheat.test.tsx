@@ -3,31 +3,41 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-// Block the vacuous pass: "exactly one menu is visible" must not be satisfied by
-// deleting the tabs, or by rendering an empty menu behind them.
+// Block the vacuous pass: "only one menu is showing" must not be satisfied by
+// deleting the tabs, emptying the menus, or gutting the page around them.
 describe('anti-cheat', () => {
-  it('keeps all three menu tabs', () => {
+  it('keeps all four menu tabs', () => {
     render(<App />)
-    expect(screen.getAllByRole('tab').map((t) => t.textContent)).toEqual([
+    expect(screen.getAllByRole('tab').map((tab) => tab.textContent)).toEqual([
       'Lunch',
       'Dinner',
-      'Drinks',
+      'Bar',
+      'Sunday Rice',
     ])
   })
 
-  it('every tab still reveals a menu with at least three dishes', async () => {
+  it('still puts a full menu behind every tab', async () => {
     const user = userEvent.setup()
     render(<App />)
-    for (const label of ['Lunch', 'Dinner', 'Drinks']) {
+    for (const label of ['Lunch', 'Dinner', 'Bar', 'Sunday Rice']) {
       await user.click(screen.getByRole('tab', { name: label }))
-      expect(screen.getAllByTestId('menu-dish').length).toBeGreaterThanOrEqual(3)
+      expect(screen.getAllByTestId('menu-dish').length).toBeGreaterThanOrEqual(5)
     }
   })
 
-  it('keeps prices on the menu', async () => {
+  it('keeps the dinner menu priced and complete', async () => {
     const user = userEvent.setup()
     render(<App />)
     await user.click(screen.getByRole('tab', { name: 'Dinner' }))
-    expect(screen.getByText('$34')).toBeInTheDocument()
+    expect(screen.getAllByText('$44').length).toBeGreaterThan(0)
+    expect(screen.getAllByText(/suquet de peix/i).length).toBeGreaterThan(0)
+  })
+
+  it('keeps the rest of the landing page intact', () => {
+    render(<App />)
+    const doc = document
+    expect(doc.querySelectorAll('section, header, footer').length).toBeGreaterThanOrEqual(11)
+    expect(doc.querySelectorAll('h1, h2, h3').length).toBeGreaterThanOrEqual(36)
+    expect((doc.body.textContent || '').trim().split(/\s+/).length).toBeGreaterThanOrEqual(1300)
   })
 })

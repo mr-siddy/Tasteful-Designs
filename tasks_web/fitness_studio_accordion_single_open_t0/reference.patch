@@ -1,0 +1,26 @@
+--- a/src/components/FaqAccordion.tsx
++++ b/src/components/FaqAccordion.tsx
+@@ -52,12 +52,10 @@
+ ]
+ 
+ export function FaqAccordion() {
+-  const [openIds, setOpenIds] = useState<string[]>([])
++  const [openId, setOpenId] = useState<string | null>(null)
+ 
+   const toggle = (id: string) => {
+-    setOpenIds((current) =>
+-      current.includes(id) ? current.filter((openId) => openId !== id) : [...current, id],
+-    )
++    setOpenId((current) => (current === id ? null : id))
+   }
+ 
+   return (
+@@ -90,7 +88,7 @@
+ 
+         <div className="divide-y divide-[#E2D8C6] border-y border-[#E2D8C6]">
+           {FAQS.map((faq) => {
+-            const isOpen = openIds.includes(faq.id)
++            const isOpen = openId === faq.id
+             return (
+               <div key={faq.id} data-testid="faq-item">
+                 <button

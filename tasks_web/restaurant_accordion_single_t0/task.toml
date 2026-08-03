@@ -1,6 +1,6 @@
 [metadata]
 name = "restaurant_accordion_single_t0"
-description = "A restaurant FAQ accordion lets multiple answers stay open at once; opening one should close the others (single-open)."
+description = "A restaurant FAQ accordion leaves every question expanded once it is clicked, stacking answers on the page; opening one question should close whichever answer was already open."
 tier = 0
 parent = ""
 domain = "restaurant_accordion_single"

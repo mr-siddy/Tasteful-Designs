@@ -3,61 +3,79 @@ import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-// Block the vacuous pass: "everything on the page is announced" must not be
-// satisfied by deleting the photographs, the icon controls or the form fields.
+// Block the vacuous pass: "everything on this page is announced" must not be
+// satisfied by deleting the photographs, the quick-contact controls or the
+// request-form fields. Every selector below is a data-testid or literal page
+// copy, never an accessible name, so this gate reads the same before and after
+// the fix.
 describe('anti-cheat', () => {
-  it('keeps the reception photograph and all three clinician portraits', () => {
+  it('keeps the studio photographs and the team portraits on the page', () => {
     const { container } = render(<App />)
-    expect(screen.getByTestId('hero-photo')).toBeInTheDocument()
-    expect(screen.getAllByTestId('clinician-photo')).toHaveLength(3)
-    expect(container.querySelectorAll('img').length).toBeGreaterThanOrEqual(4)
+    expect(screen.getAllByTestId('studio-photo')).toHaveLength(3)
+    expect(screen.getAllByTestId('team-photo')).toHaveLength(4)
+    expect(container.querySelectorAll('img').length).toBeGreaterThanOrEqual(7)
   })
 
-  it('keeps the three header icon controls, each revealing its own detail', async () => {
+  it('keeps four quick-contact controls, each opening its own details', async () => {
     const user = userEvent.setup()
     render(<App />)
-    const buttons = screen.getAllByTestId('header-icon-button')
-    expect(buttons).toHaveLength(3)
+    const controls = screen.getAllByTestId('contact-action')
+    expect(controls).toHaveLength(4)
+
     const details = new Set<string>()
-    for (const button of buttons) {
-      await user.click(button)
-      const text = screen.getByTestId('header-detail').textContent ?? ''
-      expect(text.trim().length).toBeGreaterThan(20)
+    for (const control of controls) {
+      await user.click(control)
+      const text = screen.getByTestId('contact-detail').textContent ?? ''
+      expect(text.trim().length).toBeGreaterThan(60)
       details.add(text)
     }
-    expect(details.size).toBe(3)
+    expect(details.size).toBe(4)
   })
 
-  it('keeps the emergency notice and its dismiss control', async () => {
-    const user = userEvent.setup()
-    render(<App />)
-    expect(screen.getByTestId('emergency-notice')).toHaveTextContent(/same-day emergency/i)
-    await user.click(screen.getByTestId('notice-dismiss'))
-    expect(screen.queryByTestId('emergency-notice')).toBeNull()
-  })
-
-  it('keeps all five booking fields working and still confirms the request', async () => {
+  it('keeps all seven request-form controls working and still confirms the request', async () => {
     const user = userEvent.setup()
     render(<App />)
     const fields = screen.getAllByTestId('booking-field')
-    expect(fields).toHaveLength(5)
-    await user.type(fields[0], 'Priya Raman')
-    await user.type(fields[1], 'priya@example.com')
-    await user.type(fields[2], '07700 900123')
-    await user.selectOptions(fields[3], 'Friday')
-    await user.type(fields[4], 'Chipped molar, aches on cold drinks')
-    expect(fields[0]).toHaveValue('Priya Raman')
-    expect(fields[4]).toHaveValue('Chipped molar, aches on cold drinks')
+    expect(fields).toHaveLength(7)
+
+    await user.type(fields[0], 'Odile Brandt')
+    await user.type(fields[1], 'odile@harbourmail.dental')
+    await user.type(fields[2], '614 555 0913')
+    await user.selectOptions(fields[3], 'Saturday morning')
+    await user.selectOptions(fields[4], 'Check-up and clean')
+    await user.type(fields[5], 'I work nights, so mornings are easiest.')
+    await user.click(fields[6])
+
+    expect(fields[0]).toHaveValue('Odile Brandt')
+    expect(fields[3]).toHaveValue('Saturday morning')
+    expect(fields[5]).toHaveValue('I work nights, so mornings are easiest.')
+    expect(fields[6]).toBeChecked()
+
     await user.click(screen.getByTestId('booking-submit'))
-    expect(screen.getByTestId('booking-confirmation')).toHaveTextContent(/one working day/i)
+    const confirmation = screen.getByTestId('booking-confirmation')
+    expect(confirmation).toHaveTextContent(/Odile/)
+    expect(confirmation).toHaveTextContent(/saturday morning/i)
   })
 
-  it('keeps the clinicians and their roles as readable copy', () => {
+  it('keeps the treatments, plans, quotes and answers as readable copy', () => {
     render(<App />)
-    expect(screen.getByText('Dr. Mara Ellison')).toBeInTheDocument()
-    expect(screen.getByText('Dr. Tobias Frey')).toBeInTheDocument()
-    expect(screen.getByText('Imogen Vance')).toBeInTheDocument()
-    expect(screen.getByText(/lead hygienist/i)).toBeInTheDocument()
-    expect(screen.getByText(/principal dentist/i)).toBeInTheDocument()
+    expect(screen.getAllByTestId('service-card')).toHaveLength(6)
+    expect(screen.getAllByTestId('plan-card')).toHaveLength(3)
+    expect(screen.getAllByTestId('testimonial')).toHaveLength(3)
+    expect(screen.getAllByTestId('faq-item')).toHaveLength(6)
+    expect(screen.getAllByTestId('visit-step')).toHaveLength(5)
+    expect(screen.getAllByTestId('hours-row')).toHaveLength(7)
+    expect(screen.getAllByTestId('team-member')).toHaveLength(4)
+    expect(screen.getByText('$95')).toBeInTheDocument()
+    expect(screen.getByText('from $2,950')).toBeInTheDocument()
+    expect(screen.getByText('Renée Aboagye')).toBeInTheDocument()
+  })
+
+  it('keeps the page intact', () => {
+    render(<App />)
+    const doc = document
+    expect(doc.querySelectorAll('section, header, footer').length).toBeGreaterThanOrEqual(12)
+    expect(doc.querySelectorAll('h1, h2, h3').length).toBeGreaterThanOrEqual(38)
+    expect((doc.body.textContent || '').split(/\s+/).length).toBeGreaterThanOrEqual(2100)
   })
 })

@@ -1,12 +1,26 @@
---- a/src/components/Classes.tsx
-+++ b/src/components/Classes.tsx
-@@ -8,8 +8,7 @@
-   return (
-     <section id="classes" className="mx-auto max-w-5xl px-4 py-16">
-       <h2 className="text-center text-3xl font-bold">Our classes</h2>
--      {/* BROKEN: fixed 3 columns — does not collapse on small screens. */}
--      <div data-testid="class-grid" className="mt-10 grid grid-cols-3 gap-6">
-+      <div data-testid="class-grid" className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-         {CLASSES.map((c) => (
-           <div key={c.name} data-testid="class-card" className="rounded-xl border p-6">
-             <h3 className="text-lg font-semibold">{c.name}</h3>
+--- a/src/components/ClassGrid.tsx
++++ b/src/components/ClassGrid.tsx
+@@ -102,7 +102,10 @@
+           </p>
+         </div>
+ 
+-        <div data-testid="class-grid" className="mt-12 grid grid-cols-3 gap-6">
++        <div
++          data-testid="class-grid"
++          className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3"
++        >
+           {CLASSES.map((session) => (
+             <article
+               key={session.name}
+@@ -153,7 +156,10 @@
+             hard days next to easy ones instead of by accident.
+           </p>
+ 
+-          <div data-testid="level-grid" className="mt-8 grid grid-cols-4 gap-4">
++          <div
++            data-testid="level-grid"
++            className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
++          >
+             {LEVELS.map((level) => (
+               <div
+                 key={level.name}

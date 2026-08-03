@@ -1,17 +1,19 @@
-Guests book a table from the "Book a table" button in the hero, which brings up a
-small booking card over a dimmed page. Opening it is fine. Getting out of it is
-not: the only way back to the site is the little × in the corner of the card.
-Tapping the dimmed area around the card does nothing, and hitting Escape does
-nothing either — the card just sits there. On a phone that × is a very small
-target, and we are hearing from people who gave up on the page rather than find
-it. Our front-of-house manager has watched two guests reload the whole site to
-get rid of it.
+Guests use the "Reserve a table" button on our site to open the little
+reservation panel that floats over the page, and once it is up they are stuck
+with it. Tapping the dimmed part of the page around the panel does nothing.
+Pressing Escape does nothing. The only way out is the small × in the corner, and
+Margo has taken three calls this month from people who gave up and phoned instead
+because they thought the site had frozen on them — one of them on a phone, where
+that × is the size of a pea.
 
-The booking card should let a guest out the way any other dialog does: clicking
-the dimmed area behind it should dismiss it, and pressing Escape should dismiss
-it too. Dismissing it either way should leave the page exactly as it was, with
-the button still there to bring the card back up.
+The panel should be dismissable the way every other dialog on the web is: click
+the dimmed page behind it and it goes away, press Escape and it goes away, and
+the × keeps working exactly as it does now. Dismissing it should take the dimmed
+backdrop off the page too, and afterwards the button should open a fresh panel
+again as many times as a guest wants.
 
-Everything else stays as it is — the × should keep working, and the card should
-still ask for the same details, in the same order, with the same wording. The
-rest of the page is unchanged.
+Clicking inside the panel itself is not dismissing it — picking a room or sending
+the request has to leave it open, the same as today.
+
+Nothing else about the page should change: same rooms, same copy, same prices,
+same order of sections.

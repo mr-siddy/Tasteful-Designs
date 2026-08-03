@@ -1,20 +1,23 @@
-Our class schedule sits under a row of buttons — All, Strength, Conditioning and
-Mobility — so someone can narrow the week down to the kind of training they came
-in for. Pressing a button does light it up, but the list underneath doesn't
-follow. Press Strength and all eight classes are still sitting there, mobility
-and conditioning included. Press Conditioning next and what finally appears is
-the strength classes, which is what we wanted a click ago, not now. The "Showing
-N of 8 classes" line tells the same story: it keeps counting whatever the list
-happens to be showing rather than the type that is lit up.
+The busiest part of our site is the block halfway down that lists this week's
+classes — twelve of them, spread across strength, conditioning, mobility and our
+semi-private slots. Above that list is a row of buttons so somebody who only ever
+comes to the mobility sessions can pull those out and stop scrolling past the
+6:30pm heavy day.
 
-Going back to the whole week is worse. Press All after looking at, say, mobility
-and instead of the full schedule you are left with just those two mobility
-classes and no way to get the other six back short of reloading the page. People
-have emailed us asking whether we cancelled everything.
+Those buttons look like they are doing something and then do not. Press
+Conditioning and the button goes dark like it has taken the choice, and the small
+line underneath it even updates to say three of twelve sessions — but the grid
+below it does not move. All twelve cards are still sitting there, strength and
+mobility and everything else, exactly as they were. Two members have emailed to
+ask whether the filters are decorative, and one of them counted the cards to prove
+the little summary line was lying.
 
-Pressing a type should immediately show that type's classes and nothing else,
-with the count matching, and All should always bring the whole eight-class week
-back. The page should still open on the full schedule the way it does now.
+What should happen is the obvious thing: choosing a track leaves only that track's
+classes in the grid and takes the rest away, so Conditioning shows the three engine
+sessions and nothing else, and Semi-private shows just the two capped slots.
+Choosing All classes puts the full twelve back. The summary line above the grid
+should always agree with what a visitor can actually count on screen.
 
-Leave the schedule itself alone — the same classes, types, days, times, lengths
-and coaches, in the same order — and the rest of the page unchanged.
+Nothing else about the page should change: the same twelve classes with the same
+coaches, times, rooms and descriptions, the same track buttons in the same order
+with the same labels, and every other section of the page exactly as it is.

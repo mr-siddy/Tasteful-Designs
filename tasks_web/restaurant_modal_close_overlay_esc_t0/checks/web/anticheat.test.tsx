@@ -3,63 +3,48 @@ import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import App from '@app/App'
 
-// Block the vacuous pass: "the dialog is gone after an overlay click / Escape"
-// must not be satisfied by never showing the dialog, by gutting the booking
-// form, or by making it collapse on any stray interaction inside it.
+// Block the vacuous pass: "the dialog is gone after an outside click or Escape"
+// must not be satisfied by never opening it, by rendering an empty shell, or by
+// dismissing it whenever the guest touches something inside it.
 describe('anti-cheat', () => {
-  it('does not show the reservation dialog until the guest asks for it', () => {
-    render(<App />)
-    expect(screen.queryByTestId('reservation-modal')).toBeNull()
-    expect(screen.getByTestId('reserve-cta')).toBeInTheDocument()
-  })
-
-  it('opens a labelled modal dialog with a dimmed overlay behind it', async () => {
+  it('still opens a reservation panel with all three rooms', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByTestId('reserve-cta'))
-    const panel = screen.getByTestId('reservation-modal')
-    expect(panel).toHaveAttribute('role', 'dialog')
-    expect(panel).toHaveAttribute('aria-modal', 'true')
-    expect(within(panel).getByRole('heading', { name: /request a table/i })).toBeInTheDocument()
-    expect(screen.getByTestId('reservation-overlay')).toBeInTheDocument()
+    await user.click(screen.getByTestId('reserve-open'))
+    const panel = screen.getByRole('dialog')
+    expect(within(panel).getAllByTestId('seat-option')).toHaveLength(3)
+    expect(panel).toHaveTextContent(/main dining room/i)
+    expect(panel).toHaveTextContent(/lantern room/i)
   })
 
-  it('keeps the whole booking form inside the dialog', async () => {
+  it('keeps real content and a working close button in the panel', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByTestId('reserve-cta'))
-    const panel = screen.getByTestId('reservation-modal')
-    expect(within(panel).getByLabelText(/full name/i)).toBeInTheDocument()
-    expect(within(panel).getByLabelText(/^date$/i)).toBeInTheDocument()
-    expect(within(panel).getByLabelText(/party size/i)).toBeInTheDocument()
-    expect(within(panel).getByTestId('reservation-submit')).toBeInTheDocument()
+    await user.click(screen.getByTestId('reserve-open'))
+    const panel = screen.getByRole('dialog')
+    expect(within(panel).getByTestId('reserve-submit')).toBeInTheDocument()
+    expect(panel).toHaveTextContent(/\(555\) 0179/)
+    await user.click(within(panel).getByTestId('reserve-close'))
+    expect(screen.queryByRole('dialog')).toBeNull()
   })
 
-  it('still closes from the labelled close button', async () => {
+  it('does not dismiss the panel when the guest uses it', async () => {
     const user = userEvent.setup()
     render(<App />)
-    await user.click(screen.getByTestId('reserve-cta'))
-    await user.click(screen.getByRole('button', { name: /close reservation form/i }))
-    expect(screen.queryByTestId('reservation-modal')).toBeNull()
+    await user.click(screen.getByTestId('reserve-open'))
+    const panel = screen.getByRole('dialog')
+    await user.click(within(panel).getAllByTestId('seat-option')[1])
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
+    await user.click(within(panel).getByTestId('reserve-submit'))
+    expect(screen.getByRole('dialog')).toBeInTheDocument()
   })
 
-  it('stays open while the guest works inside it', async () => {
-    const user = userEvent.setup()
+  it('keeps the page intact', () => {
     render(<App />)
-    await user.click(screen.getByTestId('reserve-cta'))
-
-    await user.click(screen.getByRole('heading', { name: /request a table/i }))
-    expect(screen.queryByTestId('reservation-modal')).toBeInTheDocument()
-
-    const name = screen.getByLabelText(/full name/i)
-    await user.type(name, 'Rosa Herrera')
-    expect(screen.queryByTestId('reservation-modal')).toBeInTheDocument()
-    expect(name).toHaveValue('Rosa Herrera')
-
-    await user.selectOptions(screen.getByLabelText(/party size/i), '4 guests')
-    expect(screen.queryByTestId('reservation-modal')).toBeInTheDocument()
-
-    await user.click(screen.getByTestId('reservation-submit'))
-    expect(screen.queryByTestId('reservation-modal')).toBeInTheDocument()
+    const doc = document
+    expect(doc.querySelectorAll('section, header, footer').length).toBeGreaterThanOrEqual(12)
+    expect(doc.querySelectorAll('h1, h2, h3').length).toBeGreaterThanOrEqual(30)
+    expect((doc.body.textContent || '').split(/\s+/).length).toBeGreaterThanOrEqual(1800)
+    expect(screen.getAllByTestId('menu-dish').length).toBeGreaterThanOrEqual(6)
   })
 })

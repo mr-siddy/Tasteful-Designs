@@ -1,18 +1,35 @@
-import { Classes } from './components/Classes'
+import { SiteHeader } from './components/SiteHeader'
+import { HeroSection } from './components/HeroSection'
+import { ProofBar } from './components/ProofBar'
+import { ProgramList } from './components/ProgramList'
+import { ClassGrid } from './components/ClassGrid'
+import { MethodDeepDive } from './components/MethodDeepDive'
+import { StudioStory } from './components/StudioStory'
+import { CoachRoster } from './components/CoachRoster'
+import { MemberStories } from './components/MemberStories'
+import { FaqList } from './components/FaqList'
+import { ClosingCta } from './components/ClosingCta'
+import { SiteFooter } from './components/SiteFooter'
 
 export default function App() {
   return (
-    <div className="min-h-screen bg-white text-slate-900">
+    <div className="min-h-screen bg-stone-50 text-stone-900 antialiased">
+      <SiteHeader />
+
       <main>
-        <section id="hero" className="mx-auto max-w-5xl px-4 py-16 text-center">
-          <h1 className="text-4xl font-bold">Ironleaf Studio</h1>
-          <p className="mt-2 text-slate-600">Small-group strength and mobility classes.</p>
-        </section>
-        <Classes />
+        <HeroSection />
+        <ProofBar />
+        <ProgramList />
+        <ClassGrid />
+        <MethodDeepDive />
+        <StudioStory />
+        <CoachRoster />
+        <MemberStories />
+        <FaqList />
+        <ClosingCta />
       </main>
-      <footer className="border-t">
-        <div className="mx-auto max-w-5xl px-4 py-8 text-sm text-slate-500">© 2026 Ironleaf Studio.</div>
-      </footer>
+
+      <SiteFooter />
     </div>
   )
 }

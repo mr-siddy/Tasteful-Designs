@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Wes Okonkwo">
+  <defs>
+    <linearGradient id="bg-wes-okonkwo" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1f3f68"/>
+      <stop offset="100%" stop-color="#f2a08a"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg-wes-okonkwo)"/>
+  <circle cx="200" cy="360" r="150" fill="#ffffff" opacity="0.12"/>
+  <g>
+    <path d="M96 400 a104 104 0 0 1 208 0z" fill="#f6fafb"/>
+    <path d="M168 292 h64 v46 h-64z" fill="#7a4b30"/>
+    <circle cx="200" cy="230" r="76" fill="#7a4b30"/>
+    <path d="M120 178 a80 76 0 0 1 160 0 v10 a70 40 0 0 0-160 0z" fill="#15100e"/>
+    <g fill="#15100e">
+      <circle cx="176" cy="228" r="7"/>
+      <circle cx="224" cy="228" r="7"/>
+    </g>
+    <path d="M182 262 a24 16 0 0 0 36 0" fill="none" stroke="#15100e" stroke-width="7" stroke-linecap="round"/>
+    <path d="M148 400 a54 60 0 0 1 104 0z" fill="#f2a08a" opacity="0.9"/>
+    <path d="M200 338 l-30 20 30 34 30-34z" fill="#f6fafb"/>
+  </g>
+</svg>
