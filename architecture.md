@@ -20,22 +20,29 @@ run each stage, what it costs, and how much you can get out of it today.
 | Admission gate (`finalize`/`validate`) | ✅ done, proven | local (node) | seconds–minutes |
 | Local scoring (`score`) | ✅ done, proven | local (node) | seconds–minutes |
 | **Page generator + SFT pairs (SP3)** | ✅ **done, proven** | local (Claude Code) | Claude Code session |
+| **Long-form page gate (`page_audit`)** | ✅ **done, enforced** | local (node + jsdom) | seconds |
 | Quality judge / best-of-N selection (SP3b) | ⬜ not built | — | — |
 | Sandbox solver (agent rollouts + pass-rate) | ⚠️ **built, UNVERIFIED** | Prime sandbox | needs `PRIME_API_KEY` |
 | Tier ladders + band calibration (SP4) | ⬜ not built | — | needs `PRIME_API_KEY` |
 
 **What you can get today, honestly:** a *reproducible substrate + a working generator*,
-not yet a training-scale dataset. The corpus is **9 t0 tasks**; the taxonomy holds
-**12 seeds**, of which **39 work items** remain unbuilt. The whole generate→author→score loop
+not yet a training-scale dataset. The corpus is **11 t0 tasks**; the taxonomy holds
+**12 seeds**, of which **37 work items** remain unbuilt. The whole generate→author→score loop
 runs locally for near-zero marginal cost.
 
 **What changed with SP3:** the generator is **Claude Code itself**, driven by the
 `synthesize-webapp-task` skill (§5G). One work item → one headless `claude -p` session →
-one validated task plus its SFT pair. A 4-item sweep across 4 industries completed in
-**13m45s wall clock**, 4/4 succeeding with no human in the loop. Corpus growth is no
-longer hand-authoring.
+one validated task plus its SFT pair. Corpus growth is no longer hand-authoring.
 
-**What is still missing:** everything downstream needs Prime. All 9 tasks carry
+**What changed after that:** the first corpus validated perfectly and was still a
+failure as a *dataset* — every page was a wireframe (16–95 DOM nodes, 20–223 words;
+eight of nine with no imagery at all), because this skill told sessions to "keep it
+small". Stage 2 now mandates long-form pages and `scripts/page_audit.py` enforces it as
+a gate. The whole corpus was regenerated against it: **11/11 now clear the audit** at
+650–841 nodes and 1.8k–2.9k words, and the do-nothing reward *fell* while doing so
+(worst case 0.727 → 0.333). See §5G and §9.
+
+**What is still missing:** everything downstream needs Prime. All 11 tasks carry
 `measured = false`, so `difficulty` is a taxonomy *hint*, not evidence — nothing has
 tested whether a 4B student actually finds the t2 seeds harder than the t0 ones. The
 Prime path itself has never executed against a live sandbox. Lighting it up is still the
@@ -118,7 +125,13 @@ webapp-synth/
 │
 ├── scripts/                       SP3 — THE DRIVER (fan the skill out over the taxonomy)
 │   ├── webapp_worklist.py         unbuilt work items as TSV, ordered on a seed × industry diagonal
-│   └── synth_sweep.sh             one headless `claude -p` per item, concurrent, resumable
+│   ├── synth_sweep.sh             one headless `claude -p` per item, concurrent, resumable;
+│   │                              REGEN=1 rebuilds existing tasks against the current skill
+│   ├── page_audit.py              GATE 2 — is the page actually long-form? (renders via jsdom)
+│   ├── build_preview.sh           build every task in BOTH states into one static site
+│   ├── serve_preview.sh           serve that site on one port
+│   ├── make_preview_index.py      the preview index, from task.toml + measured data
+│   └── refresh_preview_data.sh    re-measure rewards + audit metrics for the index
 │
 ├── webapp_synth/                  THE PACKAGE
 │   ├── __init__.py
@@ -132,18 +145,17 @@ webapp-synth/
 │       ├── webapp_library.md      industries × archetypes × 12 component-anchored seeds + principles
 │       └── seeds.py               parser + checkability gate (Seed, WorkItem, parse_seeds, …)
 │
-├── tasks_web/                     THE CORPUS (9 tasks today; the surface trained later)
-│   │                              hand-authored (SP1 era):
+├── tasks_web/                     THE CORPUS (11 tasks; every one generated + long-form)
 │   ├── taskflow_repair_t0/            saas landing — mobile menu doesn't close on navigate
+│   ├── saas_pricing_most_popular_t0/  saas landing — every plan carries the popular ribbon
+│   ├── saas_a11y_labels_alt_t0/       saas landing — nothing exposed to assistive tech
 │   ├── dental_clinic_form_validation_t0/  dental lead_gen — form submits without validation
-│   ├── restaurant_accordion_single_t0/    restaurant landing — FAQ allows multiple open
-│   ├── fitness_responsive_grid_t0/        fitness landing — grid doesn't collapse on mobile
-│   │                              skill-built, hand-driven:
-│   ├── restaurant_tabs_active_panel_t0/   restaurant landing — every menu panel renders at once
-│   │                              skill-built, generated unattended by sweep01:
-│   ├── saas_pricing_most_popular_t0/      saas landing — every plan carries the popular ribbon
 │   ├── dental_clinic_a11y_labels_alt_t0/  dental landing — nothing exposed to assistive tech
+│   ├── restaurant_accordion_single_t0/    restaurant landing — FAQ allows multiple open
+│   ├── restaurant_tabs_active_panel_t0/   restaurant landing — every menu panel renders at once
 │   ├── restaurant_modal_close_overlay_esc_t0/ restaurant landing — dialog ignores overlay + Esc
+│   ├── fitness_responsive_grid_t0/        fitness landing — grid doesn't collapse on mobile
+│   ├── fitness_studio_accordion_single_open_t0/ fitness landing — FAQ allows multiple open
 │   └── fitness_studio_filter_list_t0/     fitness landing — class filter lags one click behind
 │       └── <each task>/
 │           ├── instruction.md     symptom-only user request (never names the fix)
@@ -337,6 +349,9 @@ rules that carry the design:
 
 | Rule | Why |
 |---|---|
+| **The page is the product — build it long-form** | it is the SFT target and the only artifact a human ever looks at; a thin page is a failed deliverable however well the RL task validates |
+| **Wide and shallow** | page *length* is not difficulty (a 12-section page is no harder to debug than a 3-section one when each section is a self-contained, obviously-named component); page *depth* is. Many siblings, flat tree, defect in exactly one |
+| A richer page must **not** raise the reward floor | structure assertions stay at ~3 however long the page grows; page integrity is guarded by `anticheat` (**binary**), never by `correctness` (**fractional**, feeds reward) |
 | Generate the **finished page first**, break a copy | `finalize` needs a solved repo to diff; the page is the SFT artifact; a planted defect stays surgical |
 | **Clone** a proven task, never generate a Vite project | inherits the resolved `package-lock.json` and warm `node_modules` — the inner loop is seconds, not minutes |
 | ~3 structure assertions vs **≥5 defect-bearing**, baseline **≤ 0.4** | reward is the pass fraction, so structure assertions are free credit a do-nothing agent banks |
@@ -350,6 +365,26 @@ on a browser API jsdom lacks (`scroll_spy_active_link` → `IntersectionObserver
 timer-driven `carousel_wrap_bounds`) may **append** a deterministic stub, leaving the
 existing `fetch`/`Date.now`/`Math.random` stubs intact. Without it those 8 work items are
 unbuildable.
+
+**`scripts/page_audit.py` — GATE 2.** `validate` proves the task is *gradeable*; nothing
+proved the page was *good*, and that gap is exactly how a corpus of wireframes passed every
+check. This renders the page through the same vitest/jsdom harness the checks use and
+measures it:
+
+| metric | floor | corpus today (11 tasks) |
+|---|---|---|
+| sections | ≥ 8 | 12–15 |
+| DOM nodes | ≥ 350 | 650–841 |
+| words | ≥ 650 | 1,834–2,936 |
+| components | ≥ 6 | 12–15 |
+| headings | ≥ 8 | 35–57 |
+| interactive elements | ≥ 6 | 26–52 |
+| placeholder text | 0 | 0 |
+| svg/img | — | 29–77 |
+
+`THIN` is a failure exactly like a failing `validate`, and it is wired into Stage 6,
+Stage 8 acceptance, the self-audit and the sweep prompt. Every task in the *first* corpus
+failed it.
 
 **`scripts/webapp_worklist.py`** — emits unbuilt work items as TSV. It subtracts
 `(seed, industry)` pairs already in `tasks_web/`, dedupes the two archetypes that would
@@ -370,10 +405,28 @@ not:
   finished page in a scratchpad that does not survive; the driver also requires the brief
   be written alongside it, making the SFT pair a deliverable rather than a side effect.
 
+**`REGEN=1`** rebuilds tasks that already exist — the mechanism that upgraded the whole
+corpus to long-form in one pass. It preserves each task's name, seed, industry and
+page_archetype (read back out of its `task.toml`) and regenerates everything else against
+the *current* skill. Two safeguards matter:
+
+- **Sessions clone from `runs/scaffold`**, a pristine snapshot taken before the run. The
+  usual scaffold is a task in `tasks_web/`, and under `REGEN` that task is itself being
+  rebuilt — four sessions cloning a directory a fifth is deleting would corrupt the run.
+- **Restore-on-failure.** Each task dir is removed so its session starts clean, but the old
+  version is committed, so any session that dies or produces a task failing `validate` is
+  `git checkout`-restored in the report pass. A failed rebuild leaves the old task, never a
+  hole in the corpus.
+
 Sessions write per-item logs and SFT artifacts under `runs/synth/<sweep_id>/` (gitignored;
 each finished page carries a ~110 MB `node_modules`). Note `claude -p` buffers its output
 until exit, so a running session's log is empty — task-directory file counts are the live
 progress signal.
+
+**`scripts/build_preview.sh` + `serve_preview.sh`** build every task in *both* states into
+one static site on one port, reconstructing the fixed state as `repo/ + reference.patch`.
+This is how the thinness was spotted in the first place — the metrics all passed while the
+pages were plainly empty to look at.
 
 ---
 
@@ -452,12 +505,29 @@ python3 scripts/webapp_worklist.py --limit 4          # the next diverse slice
 # Inspect the composed prompt without launching anything
 DRY_RUN=1 bash scripts/synth_sweep.sh
 
-# Run a sweep: 4 work items, 4 concurrent headless sessions (~15 min wall clock)
-SWEEP_ID=sweep02 LIMIT=4 PARALLEL=4 bash scripts/synth_sweep.sh
+# Run a sweep: 4 work items, 4 concurrent headless sessions
+SWEEP_ID=sweep03 LIMIT=4 PARALLEL=4 bash scripts/synth_sweep.sh
 
 # Or name the work items explicitly
-ITEMS=saas_a11y_labels_alt_t0,restaurant_carousel_wrap_bounds_t0 \
+ITEMS=restaurant_carousel_wrap_bounds_t0,saas_filter_list_t0 \
   bash scripts/synth_sweep.sh
+
+# Rebuild EXISTING tasks against the current skill (names + taxonomy preserved)
+REGEN=1 SWEEP_ID=regen PARALLEL=4 bash scripts/synth_sweep.sh
+REGEN=1 ITEMS=taskflow_repair_t0 bash scripts/synth_sweep.sh    # just one
+```
+
+Gate 2, the long-form audit — run it on anything that claims to be a page:
+```bash
+python3 scripts/page_audit.py runs/synth/<sweep>/fixed/<task>   # one page
+python3 scripts/page_audit.py --all                             # the whole corpus
+```
+
+Look at what was generated — every task in both states, one static site, one port:
+```bash
+bash scripts/refresh_preview_data.sh    # re-measure rewards + audit (slow, on demand)
+bash scripts/build_preview.sh           # build all tasks x {broken, fixed}
+bash scripts/serve_preview.sh 8123      # → http://localhost:8123/
 ```
 The driver prints a per-task `RC / EXISTS / VALIDATE` table at the end. **Verify
 independently** — re-run `validate` and both `score` endpoints yourself rather than
@@ -497,14 +567,16 @@ uv run vf-eval webapp-synth-solver-opencode --disable-env-server -c -1 \
   corpus end-to-end locally for free.
 
 **Task generation (SP3) — a Claude Code session per work item, no Prime:**
-- Measured on sweep01: **4 tasks in 13m45s wall clock** at `PARALLEL=4`, i.e. ~9–14 min
-  per session, all four succeeding. Concurrency is bounded by host cores and the vitest
-  runs, not by any quota; 4-at-a-time was comfortable on a 14-core machine.
+- Measured on the long-form regen: **9 tasks in 47 min wall clock** at `PARALLEL=4`,
+  9/9 succeeding — roughly **14–30 min per session**. (The earlier thin-page sweep ran
+  4 tasks in 13m45s; long-form pages are 10–50× bigger and cost proportionally more
+  session time.) Concurrency is bounded by host cores and the vitest runs, not by any
+  quota; 4-at-a-time was comfortable on a 14-core machine.
 - Marginal cost is the Claude Code session itself. There is no inference bill on Prime and
   no sandbox — this is the cheapest stage in the pipeline, which is why corpus growth is
   no longer the bottleneck.
 - Disk is the real cost: each retained finished page carries a ~110 MB `node_modules`
-  (~480 MB for a 4-item sweep) under the gitignored `runs/`. Prune when done, or strip
+  (~1.1 GB for a 9-item regen) under the gitignored `runs/`. Prune when done, or strip
   `node_modules` if you want to archive the SFT pages long-term.
 
 **Prime sandbox per rollout (`webapp-synth-solver-opencode`):** each rollout is one
@@ -525,10 +597,10 @@ policy gradient updates — the dominant compute, and the reason to grow the cor
 **Practical sizing guidance:**
 - To *verify the Prime path*: a handful of single rollouts on the 9 existing tasks — cheap,
   the immediate first spend (expect to iterate on node provisioning / npm egress / PATH).
-- To *calibrate the corpus* (SP4): ~10 rollouts × 9 tasks × a few refine attempts. This is
+- To *calibrate the corpus* (SP4): ~10 rollouts × 11 tasks × a few refine attempts. This is
   the gate that turns the taxonomy's `difficulty` hints into measured bands.
-- To *grow the corpus*: local sweeps, no Prime — 39 work items remain, ~14 min per batch of
-  4. Generation is no longer the constraint; **measurement** is.
+- To *grow the corpus*: local sweeps, no Prime — 37 work items remain, ~45 min per batch of
+  4 long-form tasks. Generation is no longer the constraint; **measurement** is.
 
 ---
 
@@ -538,27 +610,50 @@ policy gradient updates — the dominant compute, and the reason to grow the cor
 - A taxonomy of 12 checkable seeds + a parser + a checkability gate (`test_taxonomy` 5/5).
 - **A working page generator** (§5G): work item → headless Claude Code session → validated
   task + SFT pair, no human in the loop. 4/4 on its first unattended sweep.
-- **9 t0 tasks**, each with a verified **RED→GREEN admission gate** (`validate [OK]`) and a
-  minimal `finalize`-generated `reference.patch`. Reward endpoints, independently re-scored:
+- **11 t0 tasks**, each with a verified **RED→GREEN admission gate** (`validate [OK]`), a
+  minimal `finalize`-generated `reference.patch`, and a page that clears the long-form
+  audit. Every number below re-measured independently, not taken from a session log:
 
-  | task | seed | industry | broken (do-nothing) | fixed | origin |
-  |---|---|---|---|---|---|
-  | `dental_clinic_a11y_labels_alt_t0` | a11y_labels_alt | dental_clinic | **0.273** (3/11) | 1.0 | sweep01 |
-  | `saas_pricing_most_popular_t0` | pricing_most_popular | saas | **0.300** (3/10) | 1.0 | sweep01 |
-  | `fitness_studio_filter_list_t0` | filter_list | fitness_studio | **0.333** (3/9) | 1.0 | sweep01 |
-  | `restaurant_modal_close_overlay_esc_t0` | modal_close_overlay_esc | restaurant | **0.333** (3/9) | 1.0 | sweep01 |
-  | `restaurant_tabs_active_panel_t0` | tabs_active_panel | restaurant | **0.375** (3/8) | 1.0 | skill, hand-driven |
-  | `restaurant_accordion_single_t0` | accordion_single_open | restaurant | 0.571 (4/7) | 1.0 | hand-authored |
-  | `fitness_responsive_grid_t0` | responsive_grid_collapse | fitness_studio | 0.600 (3/5) | 1.0 | hand-authored |
-  | `dental_clinic_form_validation_t0` | form_validation_gating | dental_clinic | 0.667 (6/9) | 1.0 | hand-authored |
-  | `taskflow_repair_t0` | mobile_menu_close_on_navigate | saas | 0.727 (8/11) | 1.0 | hand-authored |
+  | task | seed | industry | broken (do-nothing) | fixed | sections | nodes | words |
+  |---|---|---|---|---|---|---|---|
+  | `saas_a11y_labels_alt_t0` | a11y_labels_alt | saas | **0.250** (3/12) | 1.0 | 12 | 735 | 2037 |
+  | `saas_pricing_most_popular_t0` | pricing_most_popular | saas | **0.273** (3/11) | 1.0 | 13 | 788 | 2343 |
+  | `dental_clinic_form_validation_t0` | form_validation_gating | dental_clinic | **0.300** (3/10) | 1.0 | 13 | 752 | 2514 |
+  | `restaurant_accordion_single_t0` | accordion_single_open | restaurant | **0.300** (3/10) | 1.0 | 15 | 841 | 2694 |
+  | `taskflow_repair_t0` | mobile_menu_close_on_navigate | saas | **0.333** (3/9) | 1.0 | 12 | 762 | 1834 |
+  | `dental_clinic_a11y_labels_alt_t0` | a11y_labels_alt | dental_clinic | **0.333** (3/9) | 1.0 | 14 | 768 | 2571 |
+  | `fitness_responsive_grid_t0` | responsive_grid_collapse | fitness_studio | **0.333** (3/9) | 1.0 | 12 | 650 | 2018 |
+  | `fitness_studio_accordion_single_open_t0` | accordion_single_open | fitness_studio | **0.333** (3/9) | 1.0 | 14 | 809 | 1875 |
+  | `fitness_studio_filter_list_t0` | filter_list | fitness_studio | **0.333** (3/9) | 1.0 | 13 | 815 | 2936 |
+  | `restaurant_modal_close_overlay_esc_t0` | modal_close_overlay_esc | restaurant | **0.333** (3/9) | 1.0 | 15 | 691 | 2381 |
+  | `restaurant_tabs_active_panel_t0` | tabs_active_panel | restaurant | **0.333** (3/9) | 1.0 | 13 | 711 | 2054 |
 
-  The split is the point, and it is clean: every skill-built task lands **≤ 0.375** while
-  every hand-authored one leaks **0.571–0.727** to an agent that does nothing at all. Four
-  independent sessions converged on ~3 structure assertions against 6–8 defect-bearing ones
-  without coordinating, so the weighting rule generalizes rather than being one author's
-  habit. The four hand-authored tasks are the corpus's weakest RL signal and should be
-  re-weighted (or regenerated through the skill) before training.
+  Every task sits at or below **0.333** against a 0.4 mandate, and every one carries exactly
+  3 structure assertions — the weighting rule holds across 11 independently generated tasks.
+
+**The long-form correction — worth reading before trusting any of the above.** The first
+corpus passed `validate` on all 9 tasks and was still a failed dataset: 16–95 DOM nodes and
+20–223 words, eight of nine with zero imagery. The cause was a line in this repo's own
+skill (*"Keep it small… page size is not difficulty"*) — right about RL difficulty, applied
+to an artifact that is also the SFT target. It was found by building the preview site and
+*looking*, not by any check.
+
+The fix was to resolve the tension rather than invert it (**wide and shallow**, §5G) and to
+add a gate, since an ungated quality bar is a wish. The corpus was then regenerated whole.
+The result is the thing worth knowing:
+
+| | before | after |
+|---|---|---|
+| DOM nodes | 16–95 | **650–841** |
+| words | 20–223 | **1,834–2,936** |
+| components | 1–3 | **12–15** |
+| svg/img | 0 in 8 of 9 | **29–77** |
+| worst do-nothing reward | **0.727** | **0.333** |
+
+Pages grew 10–50× and the reward floor *fell*. That is the binary-vs-fractional split
+working: richness is absorbed by `anticheat`, never by `correctness`. One task moved the
+wrong way — `dental_clinic_a11y_labels_alt_t0`, 0.273 → 0.333 — still inside the mandate.
+
 - The full generate→author→score loop, computing the same `graded_reward` as evolve-cc.
 - `12 passed` unit tests, no regressions to evolve-cc.
 
@@ -568,28 +663,31 @@ policy gradient updates — the dominant compute, and the reason to grow the cor
   `pass_rates` are placeholders (`measured=false`).
 
 **Not built yet:**
-- **SP3b — the quality judge.** The generator produces one page per work item; there is no
-  vision/LLM judge doing best-of-N selection, so SFT-pair quality is unfiltered.
+- **SP3b — the quality judge.** `page_audit` gates *volume* — sections, words, components,
+  imagery — which is measurable in jsdom. It says nothing about whether a page is
+  well-designed, and jsdom cannot see layout at all. There is still no vision/LLM judge and
+  no best-of-N selection, so SFT-pair quality is gated on quantity, not taste.
 - **SP4 — tier ladders + calibration.** No t1–t4 derivation via `couples_with`, and no
   measured pass-rate bands. Every task is `measured = false`, so `difficulty` remains a
   taxonomy *hint*: `fitness_studio_filter_list_t0` is labeled t2 and
   `dental_clinic_a11y_labels_alt_t0` t0–t1, but nothing has tested whether a 4B student
   actually finds one harder than the other.
-- The full industry/seed library (12 seeds is a representative starter; 39 work items of
+- The full industry/seed library (12 seeds is a representative starter; 37 work items of
   the current library remain unbuilt).
 
 **Bottom line for allocation:** the repo is now a *validated pipeline + a working generator
-+ 9 examples*, and corpus growth costs a local Claude Code session per task. The binding
-constraint has moved from **generation** to **measurement**: nothing downstream — band
-calibration, tier ladders, RL — can start until the Prime path runs. That is where the
-first compute dollar goes.
++ 11 long-form examples*, and corpus growth costs a local Claude Code session per task
+(~15–30 min, no Prime). The binding constraint has moved from **generation** to
+**measurement**: nothing downstream — band calibration, tier ladders, RL — can start until
+the Prime path runs. That is where the first compute dollar goes.
 
 ---
 
 ## 10. Roadmap
 
 - ~~**SP3 — Generator.**~~ ✅ **Done** (§5G). Consumes `work_items(...)`, generates finished
-  React pages, derives the RL task, retains (brief → page) SFT pairs. 9 tasks built.
+  long-form React pages, derives the RL task, retains (brief → page) SFT pairs, and gates
+  page volume with `page_audit`. 11 tasks built, 11/11 clearing the audit.
 - **SP3b — Quality judge + best-of-N.** Generate several candidate pages per work item and
   select with a vision/LLM judge, so SFT-pair quality is filtered rather than first-draft.
   jsdom cannot see layout, so this is also the only place aesthetic quality can be assessed.
@@ -597,9 +695,9 @@ first compute dollar goes.
   and calibrate the taxonomy's `difficulty` hints into measured pass-rate bands (the Prime
   measurement loop). This is where the `pass_rates` placeholders get filled and the corpus
   becomes trainable. **The current blocker for everything downstream.**
-- **Re-weight the four hand-authored tasks** (§9) — their 0.571–0.727 do-nothing floors are
-  the weakest signal in the corpus.
-- **Grow the library.** 39 work items of the current taxonomy remain; beyond that, more
+- ~~**Re-weight the four hand-authored tasks.**~~ ✅ Done — superseded by the whole-corpus
+  long-form regeneration; the worst do-nothing floor is now 0.333, down from 0.727.
+- **Grow the library.** 37 work items of the current taxonomy remain; beyond that, more
   seeds and industries.
 
 ---
@@ -618,13 +716,14 @@ first compute dollar goes.
 - **`anticheat.py` is task-specific** — it hardcodes a task's component filenames + a
   marker string; do not copy it between tasks (`correctness.py`/`_vitest.py` *are* generic).
 - **Reward-signal weight:** only defect-bearing assertions distinguish broken from fixed,
-  so structure assertions are free credit. The four hand-authored tasks leak **0.571–0.727**
-  to a do-nothing rollout (§9); the skill now mandates a **≤ 0.4** floor and every task
-  built through it lands there. Re-weight the old four before training.
-- **The four hand-authored tasks carry `// BROKEN:` comments** in `repo/src` pointing
-  straight at the defect, which telegraphs the fix to an agent that only sees `repo/`. The
-  skill forbids the marker; the five newer tasks have none. This is a defect in the old
-  tasks, not a corpus convention.
+  so structure assertions are free credit. Keep them at ~3 per task **no matter how long
+  the page is** — page integrity belongs in `anticheat` (binary), never in `correctness`
+  (fractional). Every task currently sits at 0.250–0.333 against a ≤ 0.4 mandate; if a new
+  task comes out higher, add defect assertions rather than deleting structure ones.
+- **A passing `validate` says nothing about page quality.** The first corpus was 9/9 `[OK]`
+  and entirely wireframes. `page_audit` closes the *volume* half of that gap; the *taste*
+  half (layout, hierarchy, whether it looks designed) is still ungated and still needs a
+  human or SP3b. Build the preview site and look at it before trusting a sweep.
 - **macOS build-host quirks** the sweep driver works around: no GNU coreutils, so
   `timeout(1)` does not exist (perl `alarm` shim); and bash 3.2, where expanding an *empty*
   array under `set -u` is a fatal unbound-variable error.
@@ -637,5 +736,11 @@ first compute dollar goes.
   project `.venv`; `uv run` works regardless, but use a clean project `.venv` before the
   Prime runs for reproducibility.
 - **jsdom limits:** "responsive" is verified via Tailwind class presence, not real computed
-  layout; true visual/layout checks (Playwright) are deferred to SP3.
+  layout; true visual/layout checks (Playwright) are deferred to SP3b. The same limit caps
+  `page_audit` — it counts structure and copy, and cannot see whether any of it is arranged
+  well.
+- **Regenerating the corpus rewrites `reference.patch`, checks and instructions**, not just
+  the page. A `REGEN` run is a full rebuild against the current skill, so anything that
+  pinned a task's assertion count or patch contents will drift. The task *name*, seed,
+  industry and page_archetype are the only things preserved.
 ```

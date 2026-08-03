@@ -9,6 +9,7 @@ taxonomy fields, the symptom, and the two reward endpoints.
 from __future__ import annotations
 
 import html
+import json
 import sys
 from pathlib import Path
 
@@ -17,29 +18,16 @@ TASKS = REPO / "tasks_web"
 
 # Locally measured do-nothing reward (broken repo). Fixed is 1.0 for every task
 # by construction — validate proves the reference-patched repo passes all checks.
-BROKEN_REWARD = {
-    "taskflow_repair_t0": 0.727,
-    "dental_clinic_form_validation_t0": 0.667,
-    "fitness_responsive_grid_t0": 0.600,
-    "restaurant_accordion_single_t0": 0.571,
-    "restaurant_tabs_active_panel_t0": 0.375,
-    "fitness_studio_filter_list_t0": 0.333,
-    "restaurant_modal_close_overlay_esc_t0": 0.333,
-    "saas_pricing_most_popular_t0": 0.300,
-    "dental_clinic_a11y_labels_alt_t0": 0.273,
-}
+# Refresh with:  bash scripts/refresh_preview_rewards.sh
+REWARDS_JSON = REPO / "runs" / "preview" / "rewards.json"
+AUDIT_JSON = REPO / "runs" / "preview" / "audit.json"
 
-ORIGIN = {
-    "taskflow_repair_t0": "hand-authored",
-    "dental_clinic_form_validation_t0": "hand-authored",
-    "fitness_responsive_grid_t0": "hand-authored",
-    "restaurant_accordion_single_t0": "hand-authored",
-    "restaurant_tabs_active_panel_t0": "skill, hand-driven",
-    "saas_pricing_most_popular_t0": "sweep01",
-    "dental_clinic_a11y_labels_alt_t0": "sweep01",
-    "restaurant_modal_close_overlay_esc_t0": "sweep01",
-    "fitness_studio_filter_list_t0": "sweep01",
-}
+
+def load_json(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text())
+    except Exception:
+        return {}
 
 
 def read_meta(toml: Path) -> dict[str, str]:
@@ -78,6 +66,8 @@ a.btn:hover{background:#232a36;border-color:#3a4255}
 a.btn .r{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#8b94a6}
 a.btn.fixed{border-color:#2a4536;background:#182219}
 a.btn.fixed:hover{background:#1e2a20}
+.metrics{display:flex;flex-wrap:wrap;gap:14px;margin:0 0 14px;font-size:12.5px;color:#7f8899;
+        font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
 .legend{display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:#7f8899;margin:0 0 30px}
 code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;color:#c6cede}
 @media (prefers-color-scheme: light){
@@ -87,6 +77,7 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;col
   .tag{background:#eef1f6;color:#4a5567}
   .tag.origin{background:#e6f4ec;color:#256b43}
   .tag.origin.hand{background:#f6efe4;color:#7a5a2e}
+  .metrics{color:#6b7488}
   a.btn{background:#f4f6fa;border-color:#dde2ea;color:#1b1f27}
   a.btn:hover{background:#eaeef5}
   a.btn.fixed{background:#eef7f1;border-color:#cfe5d8}
@@ -97,18 +88,29 @@ code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.92em;col
 
 def main() -> int:
     out = Path(sys.argv[1])
+    rewards = load_json(REWARDS_JSON)
+    audits = load_json(AUDIT_JSON)
     cards = []
     names = sorted(
         (p.name for p in TASKS.iterdir() if (p / "task.toml").is_file()),
-        key=lambda n: BROKEN_REWARD.get(n, 1.0),
+        key=lambda n: (rewards.get(n, 1.0), n),
     )
     for n in names:
         m = read_meta(TASKS / n / "task.toml")
         has_broken = (out / n / "broken" / "index.html").is_file()
         has_fixed = (out / n / "fixed" / "index.html").is_file()
-        origin = ORIGIN.get(n, "—")
-        cls = "origin" if origin != "hand-authored" else "origin hand"
-        br = BROKEN_REWARD.get(n)
+        origin = "long-form"
+        cls = "origin"
+        br = rewards.get(n)
+        a = audits.get(n, {})
+        metrics = ""
+        if a:
+            metrics = ('<div class="metrics">'
+                       f'<span>{a.get("sections", "?")} sections</span>'
+                       f'<span>{a.get("nodes", "?")} nodes</span>'
+                       f'<span>{a.get("words", "?")} words</span>'
+                       f'<span>{a.get("components", "?")} components</span>'
+                       f'<span>{a.get("imgs", "?")} svg/img</span></div>')
         btns = []
         if has_broken:
             r = f'<span class="r">reward {br:.3f}</span>' if br is not None else ""
@@ -124,6 +126,7 @@ def main() -> int:
           <span class="tag">seed: {html.escape(m.get("seed", "?"))}</span>
         </div>
         <p class="desc">{html.escape(m.get("description", ""))}</p>
+        {metrics}
         <div class="row">{"".join(btns)}</div>
       </div>""")
 
@@ -139,12 +142,14 @@ def main() -> int:
     <strong>Broken</strong> is the repo an RL agent starts from; its reward is what a
     do-nothing agent banks. <strong>Fixed</strong> is <code>repo/ + reference.patch</code> —
     the finished page, which is also the SFT target. Sorted by broken reward ascending, so
-    the strongest RL signal is first. Tasks tagged <em>sweep01</em> were generated unattended
-    by headless Claude Code sessions.
+    the strongest RL signal is first. Every page is generated unattended by a headless
+    Claude Code session and clears the long-form audit — the per-card metrics are measured,
+    not claimed.
   </p>
   <div class="legend">
     <span>lower broken reward = stronger training signal</span>
     <span>every fixed page scores 1.000 by construction</span>
+    <span>all pages pass the long-form audit</span>
   </div>
   <div class="grid">
 {chr(10).join(cards)}

@@ -24,8 +24,17 @@ after tapping a link"), which a headless DOM can assert deterministically. The *
 is only theming. Aesthetic quality — not deterministically checkable — is deliberately
 kept out of the RL reward.
 
-Every task must pass a **RED→GREEN admission gate**: the initial repo must fail at least
-one check, and the reference-patched repo must pass all of them.
+Pages are **long-form** — 12–15 sections, ~2,300 words, real inline SVG — because the page
+is the SFT half of the dataset, not scaffolding around a defect. The rule that makes both
+halves work is **wide and shallow**: page *length* is not difficulty (a 12-section page is
+no harder to debug than a 3-section one when each section is a self-contained, obviously
+named component), page *depth* is. And a richer page must never raise the reward floor —
+page integrity is guarded by the binary anti-cheat gate, never by the fractional
+correctness score that feeds reward.
+
+Every task passes two gates: a **RED→GREEN admission proof** (`validate` — the initial repo
+must fail at least one check and the reference-patched repo must pass all of them), and a
+**long-form page audit** (`page_audit` — the page must actually be a page).
 
 ## Layout
 
@@ -34,7 +43,7 @@ one check, and the reference-patched repo must pass all of them.
 | `webapp_synth/taxonomy/` | the seed library (12 component rules × 4 industries × 2 archetypes) + parser |
 | `.claude/skills/synthesize-webapp-task/` | **the generator** — Claude Code reads this to build a task |
 | `scripts/` | the work-list + the headless sweep driver that fans the skill out |
-| `tasks_web/` | the task corpus (9 tasks) |
+| `tasks_web/` | the task corpus (11 tasks, all long-form) |
 | `webapp_synth/` | the solver module — node-enabled Prime sandbox harness, taskset, rubric, env |
 | `tests/`, `docs/` | unit tests; design specs and plans |
 
@@ -58,25 +67,41 @@ synthesize a task and the skill auto-loads, or fan it out headlessly:
 
 ```bash
 python3 scripts/webapp_worklist.py --limit 4        # what's next (diverse by construction)
-SWEEP_ID=sweep02 LIMIT=4 PARALLEL=4 bash scripts/synth_sweep.sh
+SWEEP_ID=sweep03 LIMIT=4 PARALLEL=4 bash scripts/synth_sweep.sh
+
+REGEN=1 bash scripts/synth_sweep.sh                 # rebuild existing tasks against the current skill
 ```
 
 One work item → one headless `claude -p` session → one validated task plus its SFT pair.
-A 4-item sweep across 4 industries takes **~15 min** wall clock and needs no Prime key.
+A 4-item sweep takes **~45 min** wall clock at `PARALLEL=4` and needs no Prime key.
 Always re-verify a generated task yourself rather than trusting the session's self-report:
 
 ```bash
+python3 scripts/page_audit.py --all                 # is it actually a page?
 uv run evolving-coding-agent validate <task> --tasks-dir tasks_web
 uv run evolving-coding-agent score <task> --tasks-dir tasks_web --candidate-repo tasks_web/<task>/repo
 ```
 
+## Look at what was generated
+
+```bash
+bash scripts/build_preview.sh && bash scripts/serve_preview.sh 8123
+```
+
+Builds every task in **both** states — broken and `repo/ + reference.patch` — into one
+static site at `http://localhost:8123/`. Worth doing: the first corpus passed every
+automated check while being visibly empty, and that was only caught by looking.
+
 ## Status
 
 Working and proven locally: the taxonomy, the task format and deterministic checks, the
-admission gate, local scoring, and the page generator. **9 t0 tasks**, all `validate [OK]`,
-39 work items unbuilt.
+admission gate, local scoring, the page generator, and the long-form audit. **11 t0 tasks**,
+all `validate [OK]`, all clearing the audit, 37 work items unbuilt. Do-nothing reward runs
+0.250–0.333 against a ≤ 0.4 mandate.
 
-Not yet: a quality judge for best-of-N SFT selection, and — the real blocker — **anything
-requiring Prime**. Every task is `measured = false`, so difficulty is a taxonomy *hint*
-rather than evidence, and the sandbox rollout path has never run against a live sandbox.
-Tier ladders, band calibration, and RL all wait on that. See §9 of `architecture.md`.
+Not yet: a quality judge for best-of-N SFT selection — `page_audit` gates page *volume*,
+which jsdom can measure, but says nothing about whether a page is well *designed*. And the
+real blocker: **anything requiring Prime**. Every task is `measured = false`, so difficulty
+is a taxonomy *hint* rather than evidence, and the sandbox rollout path has never run
+against a live sandbox. Tier ladders, band calibration, and RL all wait on that.
+See §9 of `architecture.md`.
