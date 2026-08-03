@@ -41,7 +41,8 @@ ways that pollute the reward signal.
 1. **Pick** an unused work item — `seed` × `industry` × `page_archetype` from
    `webapp_synth/taxonomy/webapp_library.md`.
 2. **Scaffold** by cloning an existing task (never generate a Vite project).
-3. **Generate** the finished page into a scratch fixed repo OUTSIDE `tasks_web/`.
+3. **Generate** a LONG-FORM finished page into a scratch fixed repo OUTSIDE
+   `tasks_web/` — 8+ sections, real copy, real SVG. This is the SFT product.
 4. **Break** a copy of it — that copy becomes `repo/`.
 5. **Write** `checks/`, `instruction.md`, `task.toml`.
 6. **Iterate** with the fast vitest inner loop until the harness is RED against
@@ -137,14 +138,70 @@ If you were invoked headlessly and given an explicit `FIXED` path, use it — th
 sweep driver puts it under the run directory so the SFT artifact survives the
 session instead of being stranded in a scratchpad.
 
-Author the finished page there. Requirements:
+### This page is the product. Build it long-form.
 
-- **A real landing page for the industry**, not a test fixture. Give it a hero,
-  the seed's component section, and a footer. Real copy, plausible names, a
-  coherent Tailwind visual identity. This is an SFT target — it should look like
-  something a designer shipped.
-- **Keep it small.** A handful of components. Page size is not difficulty and a
-  bloated repo is a bad task.
+**The page is not scaffolding around a defect — it is half the dataset.** It is
+the SFT target, and it is the only artifact anyone will ever look at. A thin page
+is a failed deliverable even if the RL task around it validates perfectly.
+
+> **Wide and shallow — the rule that makes both halves work.** Page *length* is
+> not difficulty: a twelve-section page is no harder to debug than a three-section
+> one when every section is a self-contained component with an obvious name. Page
+> *depth* is difficulty: nested indirection, prop drilling, state shared across
+> components. So go **wide** — many sibling components, one per section, a flat
+> tree, names that map straight onto the symptom — and keep the tree **shallow**.
+> The defect still lives in exactly one component. You get a real landing page and
+> a fair t0 at the same time.
+
+**Ship at least all of these**, adapted to the industry (a restaurant gets a menu
+and a room, a SaaS gets pricing and integrations — the *shape* is what carries over):
+
+1. **Header / nav** — brand mark, 4+ destinations, a primary action
+2. **Hero** — headline, a real subhead of 20+ words, two CTAs, a supporting visual
+3. **Social proof** — logos, stats, ratings, or credentials
+4. **Primary offering** — 4–6 items with names, prices/specs, and a sentence each
+5. **The seed's component section** — the interaction the task is anchored on
+6. **Deep-dive** — 2–3 alternating copy/visual blocks that explain something properly
+7. **Process or story** — numbered steps, the room, the team, the method
+8. **Testimonials** — 2–3 quotes with named, plausible attribution
+9. **FAQ** — 4+ real questions with real answers
+10. **Closing CTA** — a final conversion block
+11. **Footer** — multi-column: nav, contact, hours/address, legal
+
+**Volume floors — these are gated in Stage 6, not suggestions:**
+
+| metric | floor |
+|---|---|
+| sections (`<section>`/`<header>`/`<footer>`) | **≥ 8** |
+| rendered DOM elements | **≥ 350** |
+| visible words of copy | **≥ 650** |
+| files in `src/components/` | **≥ 6** |
+| `h1`–`h3` headings | **≥ 8** |
+| links + buttons + form controls | **≥ 6** |
+| placeholder text | **0** |
+
+**Copy must be real.** No `Lorem ipsum`, no "Feature One / Feature Two", no
+"Your Company Here", no `example.com`, no "John Doe". Invent a specific business
+with a specific personality and write its actual marketing copy — a named
+neighbourhood, real-sounding prices, dishes or plans someone chose, testimonials
+from named people with roles. Specificity is the whole difference between an SFT
+target and a wireframe.
+
+**Give it a visual identity.** Default Tailwind grays on white read as unstyled.
+Commit to a palette (2 brand colors + a warm or cool neutral ramp), a type scale
+with real weight contrast, generous section padding, and a consistent radius and
+shadow language. Vary section backgrounds so the page has rhythm as you scroll.
+
+**Ship real visuals — this is the single biggest gap.** No network is available,
+so:
+- **Inline `<svg>`** for logos, icons, spot illustrations, dividers, background
+  blobs. Every page needs an icon set and at least one substantial illustration.
+- **CSS/Tailwind gradients, patterns and shapes** for hero and section backgrounds.
+- **`<img>` only with a `data:` URI or a repo-local file** — never an `http(s)` URL.
+  (The `a11y_labels_alt` seed needs real `<img>` elements to carry `alt`.)
+
+**Everything else still holds:**
+
 - **Semantic HTML + ARIA**, because that is what the checks assert against:
   `role="tablist"/"tab"/"tabpanel"`, `contentinfo` for the footer, `<h1>` for the
   name, real `aria-selected` / `aria-expanded` / `alt` / labels.
@@ -154,9 +211,15 @@ Author the finished page there. Requirements:
   `fetch` and pins `Date.now`/`Math.random`, and any unmocked source of variance
   makes the reward flaky.
 
-Record the one-paragraph **brief** you generated the page from. The
-(brief → finished page) pair is the SFT datapoint; the page is also SP4's
-reference. Keep both.
+**A richer page must NOT raise the reward floor.** Keep structure assertions in
+`correctness.test.tsx` at ~3 no matter how long the page gets. Page integrity is
+protected by `anticheat` — a **binary** gate — not by `correctness`, which is
+**fractional** and feeds the reward directly. That split is what lets the page
+grow without handing a do-nothing agent more free credit.
+
+Record the one-paragraph **brief** you generated the page from — and make the
+brief as specific as the page, because (brief → page) is the SFT datapoint and a
+vague brief teaches the model nothing. The page is also SP4's reference. Keep both.
 
 ---
 
@@ -223,6 +286,24 @@ The defect assertions must not be satisfiable by **deleting the feature**. If
 "exactly one panel is visible" is the rule, rendering zero panels or deleting the
 tabs must FAIL. Assert the component still exists, still exposes all its
 controls, and still renders real content behind each one.
+
+**Also guard the page itself.** A long-form page gives an agent much more to
+delete, and this binary gate is where that is caught — never in `correctness`,
+which would raise the reward floor. Add a page-integrity test:
+
+```tsx
+it('keeps the page intact', () => {
+  render(<App />)
+  const doc = document
+  expect(doc.querySelectorAll('section, header, footer').length).toBeGreaterThanOrEqual(8)
+  expect(doc.querySelectorAll('h1, h2, h3').length).toBeGreaterThanOrEqual(8)
+  expect((doc.body.textContent || '').split(/\s+/).length).toBeGreaterThanOrEqual(650)
+})
+```
+
+Set the numbers from what your page actually measures in Stage 6, a little below
+the real values so honest refactors survive — the point is to stop a page being
+gutted, not to freeze it.
 
 ### `checks/anticheat.py` — **TASK-SPECIFIC, never copied**
 
@@ -295,6 +376,25 @@ rm -rf .eca_checks
 Confirm the broken-state fraction is **≤ 0.4**. Clean up `.eca_checks/` — it is
 gitignored but leaving it behind pollutes the repo copy.
 
+### The page audit — GATE 2, as binding as the reward floor
+
+```bash
+python3 scripts/page_audit.py "$FIXED"
+```
+
+It renders the page and measures it against the Stage 2 floors. **`THIN` is a
+failure**, exactly like a failing `validate`. Every task in the first corpus fails
+this gate — 16–95 DOM nodes and 20–223 words against floors of 350 and 650 — which
+is why it exists.
+
+If it reports `THIN`, **write more page**: more sections, more real copy, more
+components, more SVG. Do not lower the floors, and do not pad with empty wrapper
+divs — `nodes` counts elements, but `words`, `sections` and `headings` will not
+move unless the page genuinely grows.
+
+Run it against `$FIXED`. The broken repo is derived from the finished page and
+carries the same content, so auditing one audits both.
+
 ---
 
 ## Stage 7 — finalize and validate
@@ -348,9 +448,10 @@ anticheat = "checks/anticheat.py"
 
 ## Stage 8 — acceptance
 
-All four must hold:
+All five must hold:
 
 ```bash
+python3 scripts/page_audit.py "$FIXED"                                        # OK, not THIN
 uv run evolving-coding-agent validate <name> --tasks-dir tasks_web            # [OK]
 uv run evolving-coding-agent score <name> --tasks-dir tasks_web \
     --candidate-repo tasks_web/<name>/repo                                    # reward <= ~0.4
@@ -366,17 +467,19 @@ Then confirm: `git status` shows no `node_modules/`, no `.eca_checks/`, no
 
 ## Self-audit before finalize
 
-1. Could the fix be written from `instruction.md` alone without reading the
+1. Does `page_audit.py` say OK? A `THIN` page is a failed deliverable even if
+   everything else is perfect — the page is half the dataset, not scaffolding.
+2. Could the fix be written from `instruction.md` alone without reading the
    code? → it telegraphs; make it a pure symptom.
-2. Is there any `BROKEN`/`TODO`/`FIXME` comment in `repo/` pointing at the
+3. Is there any `BROKEN`/`TODO`/`FIXME` comment in `repo/` pointing at the
    defect? → delete it.
-3. Does `anticheat` reject deleting the component outright?
-4. Do the checks accept an *alternate* correct implementation, or do they assert
+4. Does `anticheat` reject deleting the component outright?
+5. Do the checks accept an *alternate* correct implementation, or do they assert
    one specific shape?
-5. Is the broken-state reward ≤ 0.4?
-6. Is `anticheat.py` guarding THIS task's filenames, not a copied task's?
+6. Is the broken-state reward ≤ 0.4?
+7. Is `anticheat.py` guarding THIS task's filenames, not a copied task's?
 
-**Prove items 3 and 4 by SCORING, not by reading.** They are claims about what
+**Prove items 4 and 5 by SCORING, not by reading.** They are claims about what
 the harness does, and reading the specs is a guess at it. Copy the finished page
 twice more and score each variant:
 
@@ -398,6 +501,7 @@ one that grades a *diff*.
 |---------|---------|
 | parse taxonomy | `uv run python -c "from webapp_synth.taxonomy import seeds as T; print([s.seed_id for s in T.parse_seeds()])"` |
 | fast inner loop | `npx vitest run .eca_checks/<spec> --config .eca_checks/vitest.config.ts` |
+| audit page richness | `python3 scripts/page_audit.py <repo>` · `--all` for the corpus |
 | generate patch | `uv run evolving-coding-agent finalize <name> --tasks-dir tasks_web --fixed-repo <dir>` |
 | admission gate | `uv run evolving-coding-agent validate <name> --tasks-dir tasks_web` |
 | score a candidate | `uv run evolving-coding-agent score <name> --tasks-dir tasks_web --candidate-repo <dir>` |
