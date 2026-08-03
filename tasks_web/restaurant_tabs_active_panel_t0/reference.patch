@@ -1,0 +1,63 @@
+--- a/src/components/MenuTabs.tsx
++++ b/src/components/MenuTabs.tsx
+@@ -35,6 +35,7 @@
+ 
+ export function MenuTabs() {
+   const [active, setActive] = useState(0)
++  const menu = MENUS[active]
+ 
+   return (
+     <section id="menu" className="mx-auto max-w-3xl px-4 py-16">
+@@ -56,7 +57,7 @@
+             role="tab"
+             id={`menu-tab-${m.id}`}
+             data-testid="menu-tab"
+-            aria-selected={true}
++            aria-selected={i === active}
+             aria-controls={`menu-panel-${m.id}`}
+             onClick={() => setActive(i)}
+             className={
+@@ -70,27 +71,23 @@
+         ))}
+       </div>
+ 
+-      {/* One panel per menu, laid out down the section. */}
+-      {MENUS.map((m) => (
+-        <div
+-          key={m.id}
+-          role="tabpanel"
+-          id={`menu-panel-${m.id}`}
+-          aria-labelledby={`menu-tab-${m.id}`}
+-          data-testid="menu-panel"
+-          className="mt-8 divide-y"
+-        >
+-          {m.dishes.map((d) => (
+-            <div key={d.name} data-testid="menu-dish" className="flex justify-between gap-6 py-4">
+-              <div>
+-                <h3 className="font-medium">{d.name}</h3>
+-                <p className="mt-1 text-sm text-slate-600">{d.note}</p>
+-              </div>
+-              <span className="whitespace-nowrap text-slate-700">{d.price}</span>
++      <div
++        role="tabpanel"
++        id={`menu-panel-${menu.id}`}
++        aria-labelledby={`menu-tab-${menu.id}`}
++        data-testid="menu-panel"
++        className="mt-8 divide-y"
++      >
++        {menu.dishes.map((d) => (
++          <div key={d.name} data-testid="menu-dish" className="flex justify-between gap-6 py-4">
++            <div>
++              <h3 className="font-medium">{d.name}</h3>
++              <p className="mt-1 text-sm text-slate-600">{d.note}</p>
+             </div>
+-          ))}
+-        </div>
+-      ))}
++            <span className="whitespace-nowrap text-slate-700">{d.price}</span>
++          </div>
++        ))}
++      </div>
+     </section>
+   )
+ }
