@@ -1,0 +1,21 @@
+--- a/src/components/PricingTiers.tsx
++++ b/src/components/PricingTiers.tsx
+@@ -117,9 +117,6 @@
+ }
+ 
+ export function PricingTiers() {
+-  // Turn the recommended-plan treatment on once the table has a plan to recommend.
+-  const hasRecommendedPlan = PLANS.some((plan) => plan.popular)
+-
+   return (
+     <section id="pricing" className="border-t border-slate-200 bg-slate-50 py-20">
+       <div className="mx-auto max-w-5xl px-4">
+@@ -131,7 +128,7 @@
+ 
+         <div data-testid="plan-grid" className="mt-14 grid gap-6 md:grid-cols-3">
+           {PLANS.map((plan) => (
+-            <PlanCard key={plan.id} plan={plan} popular={hasRecommendedPlan} />
++            <PlanCard key={plan.id} plan={plan} popular={plan.popular} />
+           ))}
+         </div>
+ 

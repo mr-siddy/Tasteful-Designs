@@ -1,0 +1,27 @@
+[metadata]
+name = "saas_pricing_most_popular_t0"
+description = "A SaaS pricing section puts the most-popular ribbon and highlight treatment on all three plans; only the intended middle tier should carry it."
+tier = 0
+parent = ""
+domain = "saas_pricing_most_popular"
+archetype = "repair"
+kind = "frontend"
+seed = "pricing_most_popular"
+industry = "saas"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"
