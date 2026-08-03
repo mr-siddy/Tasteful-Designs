@@ -19,16 +19,27 @@ run each stage, what it costs, and how much you can get out of it today.
 | Task format + deterministic checks (SP1) | ✅ done, proven | local (node + vitest) | ~free |
 | Admission gate (`finalize`/`validate`) | ✅ done, proven | local (node) | seconds–minutes |
 | Local scoring (`score`) | ✅ done, proven | local (node) | seconds–minutes |
+| **Page generator + SFT pairs (SP3)** | ✅ **done, proven** | local (Claude Code) | Claude Code session |
+| Quality judge / best-of-N selection (SP3b) | ⬜ not built | — | — |
 | Sandbox solver (agent rollouts + pass-rate) | ⚠️ **built, UNVERIFIED** | Prime sandbox | needs `PRIME_API_KEY` |
-| Page generator + SFT (SP3) | ⬜ not built | — | — |
-| Task-derivation at scale + tier ladders (SP4) | ⬜ not built | — | — |
+| Tier ladders + band calibration (SP4) | ⬜ not built | — | needs `PRIME_API_KEY` |
 
-**What you can get today, honestly:** a *reproducible substrate + method*, not yet a
-training-scale dataset. The corpus is **4 t0 tasks**; the taxonomy holds **12 seeds**.
-The whole author→score loop runs locally for near-zero cost. The Prime path (real agent
-rollouts / RL training signal) is coded but has never executed against a live sandbox —
-lighting it up + debugging is the first thing your compute buys. A large corpus needs
-SP3 (auto-generate pages) + SP4 (derive tiers) to be built.
+**What you can get today, honestly:** a *reproducible substrate + a working generator*,
+not yet a training-scale dataset. The corpus is **9 t0 tasks**; the taxonomy holds
+**12 seeds**, of which **39 work items** remain unbuilt. The whole generate→author→score loop
+runs locally for near-zero marginal cost.
+
+**What changed with SP3:** the generator is **Claude Code itself**, driven by the
+`synthesize-webapp-task` skill (§5G). One work item → one headless `claude -p` session →
+one validated task plus its SFT pair. A 4-item sweep across 4 industries completed in
+**13m45s wall clock**, 4/4 succeeding with no human in the loop. Corpus growth is no
+longer hand-authoring.
+
+**What is still missing:** everything downstream needs Prime. All 9 tasks carry
+`measured = false`, so `difficulty` is a taxonomy *hint*, not evidence — nothing has
+tested whether a 4B student actually finds the t2 seeds harder than the t0 ones. The
+Prime path itself has never executed against a live sandbox. Lighting it up is still the
+first thing your compute buys.
 
 ---
 
@@ -39,19 +50,24 @@ evolve-cc corpus) to **webapps / landing pages across industry verticals**. The 
 data is **hybrid**:
 
 - **RL tasks** — a broken/stubbed React page + a reference fix + deterministic checks;
-  a student model edits the repo and earns a graded, cheat-safe reward. *(This is what
-  SP1+SP2 build.)*
-- **SFT pairs** — (industry brief → finished page), selected by an LLM/vision quality
-  judge. *(SP3, not built.)*
+  a student model edits the repo and earns a graded, cheat-safe reward. *(SP1+SP2.)*
+- **SFT pairs** — (industry brief → finished page). *(SP3 — the pairs are produced; the
+  quality judge that would select best-of-N is not built.)*
 
 The keystone insight: **a finished landing page is one artifact that serves both** — it
 is the SFT target *and* the "solved" reference you break to derive an RL task.
+
+This is why the generator (§5G) always writes the **finished page first** and only then
+breaks a copy of it. Three consequences fall out: `finalize` needs a solved repo to diff
+against, the finished page is retained as the SFT artifact, and a defect planted into
+known-good code is surgical — whereas a page authored broken from the start tends to be
+broken in unintended extra ways that pollute the reward signal.
 
 **The scoring bet (why this is tractable):** difficulty and checkability live in a
 **UI component/interaction rule** (e.g. "the mobile menu must close after tapping a
 link"), which is deterministically assertable with a headless DOM. The *industry* is
 only theming. Aesthetic quality — which is *not* deterministically checkable — is kept
-out of the RL reward and deferred to SP3's judge. This is what lets the reward stay
+out of the RL reward and deferred to the SP3b judge. This is what lets the reward stay
 reproducible and cheat-safe.
 
 ---
@@ -95,6 +111,15 @@ webapp-synth/
 ├── webapp_synth_solver_opencode.py  top-level shim (verifiers resolves env id → module import)
 ├── README.md, architecture.md
 │
+├── .claude/skills/                SP3 — THE GENERATOR (Claude Code reads this, not a library)
+│   └── synthesize-webapp-task/
+│       └── SKILL.md               Stages 0–8 + self-audit: pick work item → clone scaffold →
+│                                  generate finished page → plant defect → checks → finalize → validate
+│
+├── scripts/                       SP3 — THE DRIVER (fan the skill out over the taxonomy)
+│   ├── webapp_worklist.py         unbuilt work items as TSV, ordered on a seed × industry diagonal
+│   └── synth_sweep.sh             one headless `claude -p` per item, concurrent, resumable
+│
 ├── webapp_synth/                  THE PACKAGE
 │   ├── __init__.py
 │   ├── harness.py                 frontend_repo_harness — opencode harness + pinned Node LTS install
@@ -107,11 +132,19 @@ webapp-synth/
 │       ├── webapp_library.md      industries × archetypes × 12 component-anchored seeds + principles
 │       └── seeds.py               parser + checkability gate (Seed, WorkItem, parse_seeds, …)
 │
-├── tasks_web/                     THE CORPUS (4 tasks today; the surface trained later)
-│   ├── taskflow_repair_t0/            SaaS landing — mobile menu doesn't close on navigate
-│   ├── dental_clinic_form_validation_t0/  lead_gen — form submits without validation
-│   ├── restaurant_accordion_single_t0/    landing — FAQ accordion allows multiple open
-│   └── fitness_responsive_grid_t0/        landing — grid doesn't collapse on mobile
+├── tasks_web/                     THE CORPUS (9 tasks today; the surface trained later)
+│   │                              hand-authored (SP1 era):
+│   ├── taskflow_repair_t0/            saas landing — mobile menu doesn't close on navigate
+│   ├── dental_clinic_form_validation_t0/  dental lead_gen — form submits without validation
+│   ├── restaurant_accordion_single_t0/    restaurant landing — FAQ allows multiple open
+│   ├── fitness_responsive_grid_t0/        fitness landing — grid doesn't collapse on mobile
+│   │                              skill-built, hand-driven:
+│   ├── restaurant_tabs_active_panel_t0/   restaurant landing — every menu panel renders at once
+│   │                              skill-built, generated unattended by sweep01:
+│   ├── saas_pricing_most_popular_t0/      saas landing — every plan carries the popular ribbon
+│   ├── dental_clinic_a11y_labels_alt_t0/  dental landing — nothing exposed to assistive tech
+│   ├── restaurant_modal_close_overlay_esc_t0/ restaurant landing — dialog ignores overlay + Esc
+│   └── fitness_studio_filter_list_t0/     fitness landing — class filter lags one click behind
 │       └── <each task>/
 │           ├── instruction.md     symptom-only user request (never names the fix)
 │           ├── repo/              a real Vite + React + TS + Tailwind project (the unsolved state)
@@ -132,24 +165,27 @@ webapp-synth/
 ## 4. The end-to-end pipeline
 
 ```
-                 SP2                          SP1 substrate                     scoring
-        ┌──────────────────┐        ┌──────────────────────────┐       ┌───────────────────┐
- idea → │ webapp_library.md│  seed  │ author repo/ (broken)     │       │ LOCAL: score CLI  │  reward
-        │  (12 seeds ×     │──────▶ │ + fixed repo (scratch)    │──────▶│  node+vitest,     │──────▶
-        │  industries ×    │  work  │ + checks/ (vitest)        │  task │  in-process       │
-        │  archetypes)     │  item  │ + instruction.md          │       ├───────────────────┤
-        │  + seeds.py parse│        │ finalize → reference.patch│       │ SANDBOX: Prime    │  reward
-        └──────────────────┘        │ validate → RED→GREEN gate │──────▶│  opencode agent   │──────▶
-                                    └──────────────────────────┘  task │  edits repo, then │  (+ trains
-                                                                        │  in-sandbox vitest│   later)
-                                                                        └───────────────────┘
+          SP2                     SP3 generator                SP1 substrate            scoring
+   ┌──────────────────┐   ┌──────────────────────────┐  ┌────────────────────┐  ┌───────────────────┐
+ → │ webapp_library.md│   │ synth_sweep.sh           │  │ repo/  (broken)    │  │ LOCAL: score CLI  │ reward
+   │  (12 seeds ×     │──▶│  └ claude -p per item ───┼─▶│ checks/ (vitest)   │─▶│  node+vitest,     │──────▶
+   │  industries ×    │ w │     reads SKILL.md:      │  │ instruction.md     │  │  in-process       │
+   │  archetypes)     │ o │     finished page FIRST, │  │ finalize → patch   │  ├───────────────────┤
+   │  + seeds.py parse│ r │     then break a copy    │  │ validate → RED→    │  │ SANDBOX: Prime    │ reward
+   └──────────────────┘ k └───────────┬──────────────┘  │            GREEN   │─▶│  opencode agent   │──────▶
+        webapp_worklist.py            │                 └────────────────────┘  │  edits repo, then │ (+ trains
+        (diagonal, skips built)       ▼                                         │  in-sandbox vitest│  later)
+                              runs/…/fixed/<task>/                              └───────────────────┘
+                              + <task>.brief.md   ── the SFT pair
 ```
 
 1. **SP2 (taxonomy):** pick a `seed` (a component rule) + `industry` + `archetype`. The
    parser (`seeds.py`) turns the markdown library into structured `Seed`/`WorkItem`
    records and enforces that every seed is deterministically checkable.
-2. **SP1 (authoring):** build the task's `repo/` (a real Vite project in the *broken*
-   state), a scratch *fixed* repo, the `checks/`, and a symptom-only `instruction.md`.
+2. **SP3 (generation):** `webapp_worklist.py` subtracts what is built and hands the rest
+   to `synth_sweep.sh`, which spawns one headless `claude -p` per work item. Each session
+   reads `SKILL.md` and produces the finished page (retained as the SFT artifact) plus
+   the broken `repo/`, `checks/`, and `instruction.md` derived from it. See §5G.
 3. **`finalize`:** mechanically diffs broken→fixed into `reference.patch` (never
    hand-written) and re-validates.
 4. **`validate` (admission gate):** proves the *initial* repo fails ≥1 check and the
@@ -288,6 +324,57 @@ Built by subclassing evolve-cc's opencode solver so the Prime sandbox lifecycle 
 | Use | authoring, admission gate, debugging | RL rollouts + the pass-rate gate + training |
 | Reward | `graded_reward` (identical) | `graded_reward` (identical) |
 
+### 5G. The page generator (SP3) — `.claude/skills/` + `scripts/`
+
+**The generator is Claude Code itself.** There is no generator model to host and no
+sandbox in this loop: a Claude Code session reads the skill and writes the files directly
+with its own tools, then proves the result with the same deterministic admission gate
+everything else uses. This follows evolve-cc's precedent (`synthesize-task` + `claude -p`),
+so SP3's only genuinely missing piece was the skill.
+
+**`.claude/skills/synthesize-webapp-task/SKILL.md`** — Stages 0–8 plus a self-audit. The
+rules that carry the design:
+
+| Rule | Why |
+|---|---|
+| Generate the **finished page first**, break a copy | `finalize` needs a solved repo to diff; the page is the SFT artifact; a planted defect stays surgical |
+| **Clone** a proven task, never generate a Vite project | inherits the resolved `package-lock.json` and warm `node_modules` — the inner loop is seconds, not minutes |
+| ~3 structure assertions vs **≥5 defect-bearing**, baseline **≤ 0.4** | reward is the pass fraction, so structure assertions are free credit a do-nothing agent banks |
+| **No `BROKEN`/`TODO`/`FIXME`** in `repo/` | a comment pointing at the bug telegraphs the fix and floors difficulty at trivial |
+| `anticheat.py` is **task-specific** | copying one unchanged guards the wrong filenames |
+| `instruction.md` is **symptom-only**; `reference.patch` is never hand-written | localization is most of the difficulty for a small student; hand-patching is the top build-failure cause |
+| Prove the audit by **scoring**, not reading | gut the component → expect 0.0; implement the rule a second correct way → expect 1.0 |
+
+The `setup.ts` inherit-unchanged rule has one narrow exception: seeds whose rule depends
+on a browser API jsdom lacks (`scroll_spy_active_link` → `IntersectionObserver`; a
+timer-driven `carousel_wrap_bounds`) may **append** a deterministic stub, leaving the
+existing `fetch`/`Date.now`/`Math.random` stubs intact. Without it those 8 work items are
+unbuildable.
+
+**`scripts/webapp_worklist.py`** — emits unbuilt work items as TSV. It subtracts
+`(seed, industry)` pairs already in `tasks_web/`, dedupes the two archetypes that would
+collide on one task name, and orders the remainder on a **diagonal** of the seed × industry
+grid (bucket by industry, rotate bucket *j* left by *j*, round-robin). A plain round-robin
+varies industry but repeats one seed — yielding four industries all building the same
+component. Task names are `<industry>_<seed_id>_t0`.
+
+**`scripts/synth_sweep.sh`** — one fresh headless `claude -p` per work item, concurrent,
+resumable via done-markers. Three things it needs that evolve-cc's `synth_shard.sh` does
+not:
+
+- a **perl-`alarm` timeout shim** — macOS ships no GNU coreutils, so `timeout(1)` is absent;
+- **parallel-safety clauses** in the prompt — sessions share one checkout, so each is told
+  to write only inside its own task dir, treat the scaffold as read-only, and never mutate
+  git state;
+- an explicit **`$FIXED` path under the run dir** — left alone a session strands the
+  finished page in a scratchpad that does not survive; the driver also requires the brief
+  be written alongside it, making the SFT pair a deliverable rather than a side effect.
+
+Sessions write per-item logs and SFT artifacts under `runs/synth/<sweep_id>/` (gitignored;
+each finished page carries a ~110 MB `node_modules`). Note `claude -p` buffers its output
+until exit, so a running session's log is empty — task-directory file counts are the live
+progress signal.
+
 ---
 
 ## 6. Data-flow walkthroughs
@@ -356,6 +443,34 @@ cd tasks_web/<task>/repo && rm -rf .eca_checks && cp -R ../checks/web .eca_check
 npx vitest run .eca_checks/correctness.test.tsx --config .eca_checks/vitest.config.ts
 ```
 
+### 7.2b Generate new tasks (SP3 — local, needs the `claude` CLI)
+```bash
+# What is left to build (drops built pairs; diagonal order = diverse by construction)
+python3 scripts/webapp_worklist.py                    # all 39 remaining
+python3 scripts/webapp_worklist.py --limit 4          # the next diverse slice
+
+# Inspect the composed prompt without launching anything
+DRY_RUN=1 bash scripts/synth_sweep.sh
+
+# Run a sweep: 4 work items, 4 concurrent headless sessions (~15 min wall clock)
+SWEEP_ID=sweep02 LIMIT=4 PARALLEL=4 bash scripts/synth_sweep.sh
+
+# Or name the work items explicitly
+ITEMS=saas_a11y_labels_alt_t0,restaurant_carousel_wrap_bounds_t0 \
+  bash scripts/synth_sweep.sh
+```
+The driver prints a per-task `RC / EXISTS / VALIDATE` table at the end. **Verify
+independently** — re-run `validate` and both `score` endpoints yourself rather than
+trusting a session's self-report:
+```bash
+uv run evolving-coding-agent validate <task> --tasks-dir tasks_web
+uv run evolving-coding-agent score <task> --tasks-dir tasks_web --candidate-repo tasks_web/<task>/repo
+uv run evolving-coding-agent score <task> --tasks-dir tasks_web --candidate-repo runs/synth/<sweep>/fixed/<task>
+```
+
+To build a *single* task interactively instead, just ask a Claude Code session in this
+repo to synthesize one — the skill auto-loads from its description.
+
 ### 7.3 Prime sandbox — real rollouts / pass-rate (needs `PRIME_API_KEY`)
 ```bash
 export PRIME_API_KEY=...
@@ -378,8 +493,19 @@ uv run vf-eval webapp-synth-solver-opencode --disable-env-server -c -1 \
 - Taxonomy parse / pytest: **seconds**, negligible.
 - `validate` / `score` / `finalize`: dominated by `npm ci` on fresh temp repo copies
   (~30–90 s each) + vitest (~5–15 s). A single `validate` does ~2 `npm ci`s (initial +
-  reference) → **~1–3 min/task**. No GPU, no inference. You can run the entire 4-task
+  reference) → **~1–3 min/task**. No GPU, no inference. You can run the entire 9-task
   corpus end-to-end locally for free.
+
+**Task generation (SP3) — a Claude Code session per work item, no Prime:**
+- Measured on sweep01: **4 tasks in 13m45s wall clock** at `PARALLEL=4`, i.e. ~9–14 min
+  per session, all four succeeding. Concurrency is bounded by host cores and the vitest
+  runs, not by any quota; 4-at-a-time was comfortable on a 14-core machine.
+- Marginal cost is the Claude Code session itself. There is no inference bill on Prime and
+  no sandbox — this is the cheapest stage in the pipeline, which is why corpus growth is
+  no longer the bottleneck.
+- Disk is the real cost: each retained finished page carries a ~110 MB `node_modules`
+  (~480 MB for a 4-item sweep) under the gitignored `runs/`. Prune when done, or strip
+  `node_modules` if you want to archive the SFT pages long-term.
 
 **Prime sandbox per rollout (`webapp-synth-solver-opencode`):** each rollout is one
 sandbox and includes, in series:
@@ -397,11 +523,12 @@ student model size. Sandboxes run concurrently up to your Prime quota.
 policy gradient updates — the dominant compute, and the reason to grow the corpus first.
 
 **Practical sizing guidance:**
-- To *verify the Prime path*: a handful of single rollouts on the 4 existing tasks — cheap,
+- To *verify the Prime path*: a handful of single rollouts on the 9 existing tasks — cheap,
   the immediate first spend (expect to iterate on node provisioning / npm egress / PATH).
-- To *calibrate the 4 tasks* (SP4-style): ~10 rollouts × 4 tasks × a few refine attempts.
-- To *build a training corpus*: first build SP3/SP4; then budget generation inference +
-  measurement sandboxes at corpus scale.
+- To *calibrate the corpus* (SP4): ~10 rollouts × 9 tasks × a few refine attempts. This is
+  the gate that turns the taxonomy's `difficulty` hints into measured bands.
+- To *grow the corpus*: local sweeps, no Prime — 39 work items remain, ~14 min per batch of
+  4. Generation is no longer the constraint; **measurement** is.
 
 ---
 
@@ -409,12 +536,30 @@ policy gradient updates — the dominant compute, and the reason to grow the cor
 
 **Proven, reproducible, free (local):**
 - A taxonomy of 12 checkable seeds + a parser + a checkability gate (`test_taxonomy` 5/5).
-- 4 t0 tasks, each with a verified **RED→GREEN admission gate** (`validate [OK]`) and a
-  minimal `finalize`-generated `reference.patch`:
-  - `taskflow_repair_t0` (SaaS, mobile-menu-close), `dental_clinic_form_validation_t0`
-    (lead_gen, form gating), `restaurant_accordion_single_t0` (accordion single-open),
-    `fitness_responsive_grid_t0` (responsive grid).
-- The full author→score loop, computing the same `graded_reward` as evolve-cc.
+- **A working page generator** (§5G): work item → headless Claude Code session → validated
+  task + SFT pair, no human in the loop. 4/4 on its first unattended sweep.
+- **9 t0 tasks**, each with a verified **RED→GREEN admission gate** (`validate [OK]`) and a
+  minimal `finalize`-generated `reference.patch`. Reward endpoints, independently re-scored:
+
+  | task | seed | industry | broken (do-nothing) | fixed | origin |
+  |---|---|---|---|---|---|
+  | `dental_clinic_a11y_labels_alt_t0` | a11y_labels_alt | dental_clinic | **0.273** (3/11) | 1.0 | sweep01 |
+  | `saas_pricing_most_popular_t0` | pricing_most_popular | saas | **0.300** (3/10) | 1.0 | sweep01 |
+  | `fitness_studio_filter_list_t0` | filter_list | fitness_studio | **0.333** (3/9) | 1.0 | sweep01 |
+  | `restaurant_modal_close_overlay_esc_t0` | modal_close_overlay_esc | restaurant | **0.333** (3/9) | 1.0 | sweep01 |
+  | `restaurant_tabs_active_panel_t0` | tabs_active_panel | restaurant | **0.375** (3/8) | 1.0 | skill, hand-driven |
+  | `restaurant_accordion_single_t0` | accordion_single_open | restaurant | 0.571 (4/7) | 1.0 | hand-authored |
+  | `fitness_responsive_grid_t0` | responsive_grid_collapse | fitness_studio | 0.600 (3/5) | 1.0 | hand-authored |
+  | `dental_clinic_form_validation_t0` | form_validation_gating | dental_clinic | 0.667 (6/9) | 1.0 | hand-authored |
+  | `taskflow_repair_t0` | mobile_menu_close_on_navigate | saas | 0.727 (8/11) | 1.0 | hand-authored |
+
+  The split is the point, and it is clean: every skill-built task lands **≤ 0.375** while
+  every hand-authored one leaks **0.571–0.727** to an agent that does nothing at all. Four
+  independent sessions converged on ~3 structure assertions against 6–8 defect-bearing ones
+  without coordinating, so the weighting rule generalizes rather than being one author's
+  habit. The four hand-authored tasks are the corpus's weakest RL signal and should be
+  re-weighted (or regenerated through the skill) before training.
+- The full generate→author→score loop, computing the same `graded_reward` as evolve-cc.
 - `12 passed` unit tests, no regressions to evolve-cc.
 
 **Built but UNVERIFIED (needs Prime):**
@@ -423,27 +568,39 @@ policy gradient updates — the dominant compute, and the reason to grow the cor
   `pass_rates` are placeholders (`measured=false`).
 
 **Not built yet:**
-- SP3 (page generator + quality judge + SFT pairs) — the thing that *auto-produces* pages,
-  so a corpus can scale without hand-authoring each one.
-- SP4 (derive t0–t4 tier ladders via `couples_with` + measure/calibrate pass-rate bands).
-- The full industry/seed library (12 seeds is a representative starter).
+- **SP3b — the quality judge.** The generator produces one page per work item; there is no
+  vision/LLM judge doing best-of-N selection, so SFT-pair quality is unfiltered.
+- **SP4 — tier ladders + calibration.** No t1–t4 derivation via `couples_with`, and no
+  measured pass-rate bands. Every task is `measured = false`, so `difficulty` remains a
+  taxonomy *hint*: `fitness_studio_filter_list_t0` is labeled t2 and
+  `dental_clinic_a11y_labels_alt_t0` t0–t1, but nothing has tested whether a 4B student
+  actually finds one harder than the other.
+- The full industry/seed library (12 seeds is a representative starter; 39 work items of
+  the current library remain unbuilt).
 
-**Bottom line for allocation:** today the repo is a *validated pipeline + method + 4
-examples*. Your first compute dollar should verify the Prime path on the existing tasks;
-real training yield requires building SP3/SP4 and then allocating Prime inference (page
-generation + student rollouts) and sandbox compute (measurement + RL) at corpus scale.
+**Bottom line for allocation:** the repo is now a *validated pipeline + a working generator
++ 9 examples*, and corpus growth costs a local Claude Code session per task. The binding
+constraint has moved from **generation** to **measurement**: nothing downstream — band
+calibration, tier ladders, RL — can start until the Prime path runs. That is where the
+first compute dollar goes.
 
 ---
 
 ## 10. Roadmap
 
-- **SP3 — Generator + judge + SFT.** Consume `work_items(...)` to auto-generate finished
-  React pages (LLM), select the best with a vision/LLM quality judge, emit (brief → page)
-  SFT pairs, and hand finished pages to SP4 as references.
-- **SP4 — Task-derivation at scale.** Break/stub generated pages into repair/implement
-  tasks, grow each into a t0–t4 ladder via `couples_with`, and calibrate the `difficulty`
-  hints into measured pass-rate bands (the Prime measurement loop). This is where the
-  `pass_rates` placeholders get filled and the corpus becomes trainable.
+- ~~**SP3 — Generator.**~~ ✅ **Done** (§5G). Consumes `work_items(...)`, generates finished
+  React pages, derives the RL task, retains (brief → page) SFT pairs. 9 tasks built.
+- **SP3b — Quality judge + best-of-N.** Generate several candidate pages per work item and
+  select with a vision/LLM judge, so SFT-pair quality is filtered rather than first-draft.
+  jsdom cannot see layout, so this is also the only place aesthetic quality can be assessed.
+- **SP4 — Tier ladders + calibration.** Grow each t0 into a t0–t4 ladder via `couples_with`,
+  and calibrate the taxonomy's `difficulty` hints into measured pass-rate bands (the Prime
+  measurement loop). This is where the `pass_rates` placeholders get filled and the corpus
+  becomes trainable. **The current blocker for everything downstream.**
+- **Re-weight the four hand-authored tasks** (§9) — their 0.571–0.727 do-nothing floors are
+  the weakest signal in the corpus.
+- **Grow the library.** 39 work items of the current taxonomy remain; beyond that, more
+  seeds and industries.
 
 ---
 
@@ -460,9 +617,22 @@ generation + student rollouts) and sandbox compute (measurement + RL) at corpus 
   during scoring (mitigated by the setup-phase `npm ci`); sandbox memory headroom.
 - **`anticheat.py` is task-specific** — it hardcodes a task's component filenames + a
   marker string; do not copy it between tasks (`correctness.py`/`_vitest.py` *are* generic).
-- **Reward-signal weight:** in these t0 tasks only the defect-bearing assertions distinguish
-  broken from fixed (e.g. dental broken = 6/9). SP4 should weight defect assertions more
-  heavily so a do-nothing rollout can't bank most of the reward.
+- **Reward-signal weight:** only defect-bearing assertions distinguish broken from fixed,
+  so structure assertions are free credit. The four hand-authored tasks leak **0.571–0.727**
+  to a do-nothing rollout (§9); the skill now mandates a **≤ 0.4** floor and every task
+  built through it lands there. Re-weight the old four before training.
+- **The four hand-authored tasks carry `// BROKEN:` comments** in `repo/src` pointing
+  straight at the defect, which telegraphs the fix to an agent that only sees `repo/`. The
+  skill forbids the marker; the five newer tasks have none. This is a defect in the old
+  tasks, not a corpus convention.
+- **macOS build-host quirks** the sweep driver works around: no GNU coreutils, so
+  `timeout(1)` does not exist (perl `alarm` shim); and bash 3.2, where expanding an *empty*
+  array under `set -u` is a fatal unbound-variable error.
+- **`claude -p` buffers output until exit** — a running session's log file stays at 0 bytes,
+  so watch task-directory file counts for progress, not the log.
+- **`setup.ts` is inherit-unchanged except for observer/timer seeds**, which may *append* a
+  deterministic stub (see §5G). Without that exception `scroll_spy_active_link` and a
+  timer-driven `carousel_wrap_bounds` are unbuildable in jsdom.
 - **Local env hygiene:** editable installs may land in the active conda env rather than the
   project `.venv`; `uv run` works regardless, but use a clean project `.venv` before the
   Prime runs for reproducibility.
