@@ -1,4 +1,4 @@
-# webapp-synth
+# Developing Taste for Design in LLMs
 
 Synthetic-data generation for React/Tailwind landing-page coding tasks.
 
