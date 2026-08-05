@@ -98,7 +98,7 @@ only the frontend-specific pieces.
 │           ├── rubric.py         HarnessRubric (in-sandbox scoring)
 │           └── opencode/harness.py  opencode_repo_harness (agent harness)
 │
-└── webapp-synth/         (branch: main, pushed to github.com/mr-siddy/webapp-synth)
+└── webapp-synth/         (branch: main, pushed to github.com/mr-siddy/Tasteful-Designs)
     └── webapp_synth/     the NEW frontend track (reuses everything above)
 ```
 
