@@ -1,0 +1,35 @@
+{
+  "task": "taskflow_repair_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "DeepDive.tsx",
+    "Faq.tsx",
+    "FeatureGrid.tsx",
+    "Hero.tsx",
+    "HowItWorks.tsx",
+    "Integrations.tsx",
+    "MobileMenu.tsx",
+    "Pricing.tsx",
+    "PrimaryNav.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TrustBar.tsx",
+    "icons.tsx"
+  ],
+  "source_bytes": 55647,
+  "metrics": {
+    "sections": 12,
+    "nodes": 762,
+    "headings": 44,
+    "interactive": 42,
+    "imgs": 77,
+    "words": 1834,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

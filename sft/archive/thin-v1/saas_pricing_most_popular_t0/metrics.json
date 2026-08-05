@@ -1,0 +1,13 @@
+{
+  "task": "saas_pricing_most_popular_t0",
+  "sweep": "sweep01",
+  "superseded": true,
+  "has_brief": true,
+  "component_files": [
+    "PricingTiers.tsx",
+    "ValueProps.tsx"
+  ],
+  "source_bytes": 8432,
+  "metrics": null,
+  "broken_reward": null
+}

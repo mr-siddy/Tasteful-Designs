@@ -1,0 +1,33 @@
+{
+  "task": "fitness_studio_filter_list_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassSchedule.tsx",
+    "ClosingCta.tsx",
+    "CoachRoster.tsx",
+    "DeepDive.tsx",
+    "Facility.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "HowItWorks.tsx",
+    "MemberStories.tsx",
+    "Programs.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 70406,
+  "metrics": {
+    "sections": 13,
+    "nodes": 815,
+    "headings": 54,
+    "interactive": 52,
+    "imgs": 57,
+    "words": 2936,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

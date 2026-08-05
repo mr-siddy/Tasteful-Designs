@@ -1,0 +1,35 @@
+{
+  "task": "restaurant_modal_close_overlay_esc_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "BrandyBar.tsx",
+    "ClosingCta.tsx",
+    "CommonQuestions.tsx",
+    "EveningOrder.tsx",
+    "FishFryStory.tsx",
+    "GuestVoices.tsx",
+    "Hero.tsx",
+    "LanternRoom.tsx",
+    "RelishTradition.tsx",
+    "ReserveDialog.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "SupperMenu.tsx",
+    "TrustBar.tsx",
+    "VisitDetails.tsx"
+  ],
+  "source_bytes": 66947,
+  "metrics": {
+    "sections": 15,
+    "nodes": 691,
+    "headings": 44,
+    "interactive": 26,
+    "imgs": 29,
+    "words": 2381,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

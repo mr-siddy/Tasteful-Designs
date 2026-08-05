@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-label="The front desk">
+  <defs>
+    <linearGradient id="fdWall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#eef5f6"/>
+      <stop offset="100%" stop-color="#d3e3e6"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#fdWall)"/>
+  <rect y="470" width="800" height="130" fill="#bfd2d7"/>
+  <g>
+    <rect x="120" y="90" width="560" height="120" rx="16" fill="#ffffff" opacity="0.9"/>
+    <text x="400" y="152" text-anchor="middle" font-family="Georgia, serif" font-size="52" fill="#0b2d45">Cedar &amp; Vale</text>
+    <text x="400" y="188" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" fill="#2fb99b" letter-spacing="6">DENTAL STUDIO</text>
+  </g>
+  <g>
+    <rect x="150" y="330" width="500" height="140" rx="14" fill="#0b2d45"/>
+    <rect x="150" y="316" width="500" height="26" rx="13" fill="#17466a"/>
+    <rect x="180" y="360" width="120" height="14" rx="7" fill="#2fb99b" opacity="0.6"/>
+    <rect x="180" y="388" width="200" height="14" rx="7" fill="#ffffff" opacity="0.25"/>
+  </g>
+  <g>
+    <rect x="470" y="248" width="130" height="86" rx="10" fill="#17466a"/>
+    <rect x="482" y="260" width="106" height="62" rx="6" fill="#2fb99b" opacity="0.75"/>
+    <rect x="510" y="334" width="50" height="14" fill="#17466a"/>
+  </g>
+  <g fill="#4d7f52">
+    <path d="M690 470 c-44-56-22-136 40-166 12 66-4 116-40 166z"/>
+    <rect x="662" y="466" width="76" height="60" rx="10" fill="#a4785a"/>
+  </g>
+  <g>
+    <circle cx="250" cy="252" r="42" fill="#ffd0b8"/>
+    <path d="M208 330 a42 46 0 0 1 84 0z" fill="#2fb99b"/>
+    <path d="M222 232 a28 30 0 0 1 56 0 v-14 a28 22 0 0 0-56 0z" fill="#3b2f2a"/>
+  </g>
+  <g fill="none" stroke="#0b2d45" stroke-width="6" opacity="0.35">
+    <circle cx="400" cy="252" r="30"/>
+    <path d="M400 234 v20 l14 10"/>
+  </g>
+</svg>

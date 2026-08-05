@@ -1,0 +1,33 @@
+{
+  "task": "saas_pricing_most_popular_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Capabilities.tsx",
+    "CaseStudy.tsx",
+    "ClosingCta.tsx",
+    "DeepDive.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "Pricing.tsx",
+    "RolloutSteps.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TradeFit.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 60710,
+  "metrics": {
+    "sections": 13,
+    "nodes": 788,
+    "headings": 35,
+    "interactive": 41,
+    "imgs": 73,
+    "words": 2343,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.2727272727272727
+}

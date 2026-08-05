@@ -1,0 +1,33 @@
+{
+  "task": "dental_clinic_form_validation_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "AppointmentForm.tsx",
+    "CareTechnology.tsx",
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "MembershipPlans.tsx",
+    "ServicesGrid.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TeamSection.tsx",
+    "Testimonials.tsx",
+    "TrustBar.tsx",
+    "VisitTimeline.tsx"
+  ],
+  "source_bytes": 75448,
+  "metrics": {
+    "sections": 13,
+    "nodes": 752,
+    "headings": 45,
+    "interactive": 48,
+    "imgs": 73,
+    "words": 2514,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3
+}

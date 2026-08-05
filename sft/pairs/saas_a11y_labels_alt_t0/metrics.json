@@ -1,0 +1,32 @@
+{
+  "task": "saas_a11y_labels_alt_t0",
+  "sweep": "sweep02_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Capabilities.tsx",
+    "DeepDive.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "Pricing.tsx",
+    "ProductGallery.tsx",
+    "RolloutSteps.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TrialSignupForm.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 68717,
+  "metrics": {
+    "sections": 12,
+    "nodes": 735,
+    "headings": 40,
+    "interactive": 48,
+    "imgs": 69,
+    "words": 2037,
+    "components": 12,
+    "passed": true
+  },
+  "broken_reward": 0.25
+}

@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_tabs_active_panel_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Accolades.tsx",
+    "Faq.tsx",
+    "Hero.tsx",
+    "HowWeCook.tsx",
+    "MenuTabs.tsx",
+    "PrivateDining.tsx",
+    "ReserveCta.tsx",
+    "SignaturePlates.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Sourcing.tsx",
+    "Testimonials.tsx",
+    "TheHearth.tsx"
+  ],
+  "source_bytes": 60519,
+  "metrics": {
+    "sections": 13,
+    "nodes": 711,
+    "headings": 50,
+    "interactive": 35,
+    "imgs": 34,
+    "words": 2054,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

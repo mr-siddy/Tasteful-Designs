@@ -1,0 +1,14 @@
+{
+  "task": "dental_clinic_a11y_labels_alt_t0",
+  "sweep": "sweep01",
+  "superseded": true,
+  "has_brief": true,
+  "component_files": [
+    "BookingForm.tsx",
+    "ClinicHeader.tsx",
+    "TeamGallery.tsx"
+  ],
+  "source_bytes": 15406,
+  "metrics": null,
+  "broken_reward": null
+}

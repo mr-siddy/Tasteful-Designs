@@ -1,0 +1,32 @@
+{
+  "task": "fitness_responsive_grid_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassGrid.tsx",
+    "ClosingCta.tsx",
+    "CoachRoster.tsx",
+    "FaqList.tsx",
+    "HeroSection.tsx",
+    "MemberStories.tsx",
+    "MethodDeepDive.tsx",
+    "ProgramList.tsx",
+    "ProofBar.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "StudioStory.tsx"
+  ],
+  "source_bytes": 54034,
+  "metrics": {
+    "sections": 12,
+    "nodes": 650,
+    "headings": 36,
+    "interactive": 36,
+    "imgs": 41,
+    "words": 2018,
+    "components": 12,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

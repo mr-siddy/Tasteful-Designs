@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Dr. Priya Nandakumar">
+  <defs>
+    <linearGradient id="bg-priya-nandakumar" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b2d45"/>
+      <stop offset="100%" stop-color="#2fb99b"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" fill="url(#bg-priya-nandakumar)"/>
+  <circle cx="200" cy="360" r="150" fill="#ffffff" opacity="0.12"/>
+  <g>
+    <path d="M96 400 a104 104 0 0 1 208 0z" fill="#f6fafb"/>
+    <path d="M168 292 h64 v46 h-64z" fill="#e8b48c"/>
+    <circle cx="200" cy="230" r="76" fill="#e8b48c"/>
+    <path d="M118 176 a82 88 0 0 1 164 0 v92 a26 26 0 0 1-26 26 h-14 v-96 a54 54 0 0 0-84 0 v96 h-14 a26 26 0 0 1-26-26z" fill="#2b2320"/>
+    <g fill="#2b2320">
+      <circle cx="176" cy="228" r="7"/>
+      <circle cx="224" cy="228" r="7"/>
+    </g>
+    <path d="M182 262 a24 16 0 0 0 36 0" fill="none" stroke="#2b2320" stroke-width="7" stroke-linecap="round"/>
+    <path d="M148 400 a54 60 0 0 1 104 0z" fill="#2fb99b" opacity="0.9"/>
+    <path d="M200 338 l-30 20 30 34 30-34z" fill="#f6fafb"/>
+  </g>
+</svg>

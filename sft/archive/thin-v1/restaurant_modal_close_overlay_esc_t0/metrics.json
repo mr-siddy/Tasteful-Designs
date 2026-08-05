@@ -1,0 +1,13 @@
+{
+  "task": "restaurant_modal_close_overlay_esc_t0",
+  "sweep": "sweep01",
+  "superseded": true,
+  "has_brief": true,
+  "component_files": [
+    "FromTheFire.tsx",
+    "ReservationModal.tsx"
+  ],
+  "source_bytes": 8999,
+  "metrics": null,
+  "broken_reward": null
+}

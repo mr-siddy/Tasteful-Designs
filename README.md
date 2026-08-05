@@ -43,7 +43,8 @@ must fail at least one check and the reference-patched repo must pass all of the
 | `webapp_synth/taxonomy/` | the seed library (12 component rules × 4 industries × 2 archetypes) + parser |
 | `.claude/skills/synthesize-webapp-task/` | **the generator** — Claude Code reads this to build a task |
 | `scripts/` | the work-list + the headless sweep driver that fans the skill out |
-| `tasks_web/` | the task corpus (11 tasks, all long-form) |
+| `tasks_web/` | the RL half — 11 tasks, all long-form |
+| `sft/` | the supervised half — 11 (brief → finished page) pairs, plus 4 archived pre-correction pages |
 | `webapp_synth/` | the solver module — node-enabled Prime sandbox harness, taskset, rubric, env |
 | `tests/`, `docs/` | unit tests; design specs and plans |
 
@@ -81,6 +82,20 @@ python3 scripts/page_audit.py --all                 # is it actually a page?
 uv run evolving-coding-agent validate <task> --tasks-dir tasks_web
 uv run evolving-coding-agent score <task> --tasks-dir tasks_web --candidate-repo tasks_web/<task>/repo
 ```
+
+## The SFT pairs
+
+`sft/pairs/<task>/` holds each generation session's `brief.md` and the finished page it
+produced. Pages share one Vite scaffold, kept once in `sft/template/`:
+
+```bash
+cp -R sft/template /tmp/page && cp -R sft/pairs/<task>/. /tmp/page/
+cd /tmp/page && npm ci && npm run dev
+```
+
+`sft/archive/thin-v1/` holds the pre-correction pages — same seeds, 1–3 components and
+20–223 words instead of 12–15 and ~2,300. Kept for the before/after contrast; not training
+data. Rebuild the whole tree from the run dirs with `python3 scripts/export_sft.py`.
 
 ## Look at what was generated
 

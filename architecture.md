@@ -128,6 +128,7 @@ webapp-synth/
 │   ├── synth_sweep.sh             one headless `claude -p` per item, concurrent, resumable;
 │   │                              REGEN=1 rebuilds existing tasks against the current skill
 │   ├── page_audit.py              GATE 2 — is the page actually long-form? (renders via jsdom)
+│   ├── export_sft.py              lift (brief -> page) pairs out of runs/ into the tracked sft/
 │   ├── build_preview.sh           build every task in BOTH states into one static site
 │   ├── serve_preview.sh           serve that site on one port
 │   ├── make_preview_index.py      the preview index, from task.toml + measured data
@@ -145,7 +146,13 @@ webapp-synth/
 │       ├── webapp_library.md      industries × archetypes × 12 component-anchored seeds + principles
 │       └── seeds.py               parser + checkability gate (Seed, WorkItem, parse_seeds, …)
 │
-├── tasks_web/                     THE CORPUS (11 tasks; every one generated + long-form)
+├── sft/                           THE SUPERVISED HALF — exported from the gitignored runs/
+│   ├── pairs/<task>/              (brief.md -> index.html + src/ + public/) + metrics.json
+│   ├── archive/thin-v1/<task>/    pre-correction pages, kept for contrast; NOT training data
+│   ├── template/                  the Vite scaffold once, shared by every page
+│   └── manifest.json              every pair with provenance + measured metrics
+│
+├── tasks_web/                     THE REINFORCEMENT HALF (11 tasks; generated + long-form)
 │   ├── taskflow_repair_t0/            saas landing — mobile menu doesn't close on navigate
 │   ├── saas_pricing_most_popular_t0/  saas landing — every plan carries the popular ribbon
 │   ├── saas_a11y_labels_alt_t0/       saas landing — nothing exposed to assistive tech

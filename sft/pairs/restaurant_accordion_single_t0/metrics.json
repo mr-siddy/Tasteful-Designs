@@ -1,0 +1,35 @@
+{
+  "task": "restaurant_accordion_single_t0",
+  "sweep": "regen_longform",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "CellarPours.tsx",
+    "ChefsCounter.tsx",
+    "ClosingCta.tsx",
+    "EveningFlow.tsx",
+    "FaqAccordion.tsx",
+    "FireStory.tsx",
+    "GuestReviews.tsx",
+    "HearthMenu.tsx",
+    "Hero.tsx",
+    "NetLoft.tsx",
+    "ProducerMap.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx",
+    "VisitDetails.tsx"
+  ],
+  "source_bytes": 78456,
+  "metrics": {
+    "sections": 15,
+    "nodes": 841,
+    "headings": 57,
+    "interactive": 37,
+    "imgs": 61,
+    "words": 2694,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.3
+}

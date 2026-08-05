@@ -1,0 +1,12 @@
+{
+  "task": "fitness_studio_filter_list_t0",
+  "sweep": "sweep01",
+  "superseded": true,
+  "has_brief": true,
+  "component_files": [
+    "ClassSchedule.tsx"
+  ],
+  "source_bytes": 6911,
+  "metrics": null,
+  "broken_reward": null
+}
