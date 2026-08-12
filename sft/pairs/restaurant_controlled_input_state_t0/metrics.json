@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_controlled_input_state_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Accolades.tsx",
+    "Bakehouse.tsx",
+    "Faq.tsx",
+    "Hero.tsx",
+    "HowASupraWorks.tsx",
+    "PrivateSupra.tsx",
+    "QvevriCellar.tsx",
+    "ReserveTable.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TheTable.tsx",
+    "VisitUs.tsx"
+  ],
+  "source_bytes": 65840,
+  "metrics": {
+    "sections": 13,
+    "nodes": 647,
+    "headings": 46,
+    "interactive": 36,
+    "imgs": 35,
+    "words": 2083,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.2727272727272727
+}

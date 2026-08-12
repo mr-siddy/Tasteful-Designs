@@ -1,0 +1,35 @@
+{
+  "task": "saas_tabs_active_panel_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "HeroSection.tsx",
+    "IntegrationStrip.tsx",
+    "ModuleGrid.tsx",
+    "OperatorStory.tsx",
+    "PlatformTabs.tsx",
+    "PricingPlans.tsx",
+    "RolloutSteps.tsx",
+    "SamplingDeepDive.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TrustBar.tsx",
+    "WeirMark.tsx"
+  ],
+  "source_bytes": 62378,
+  "metrics": {
+    "sections": 14,
+    "nodes": 897,
+    "headings": 35,
+    "interactive": 38,
+    "imgs": 71,
+    "words": 2375,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

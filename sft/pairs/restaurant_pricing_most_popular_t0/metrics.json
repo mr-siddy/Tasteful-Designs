@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_pricing_most_popular_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "BookingSteps.tsx",
+    "ClosingCta.tsx",
+    "DeepDive.tsx",
+    "FaqSection.tsx",
+    "HearthMenu.tsx",
+    "Hero.tsx",
+    "PricingPackages.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TheRoom.tsx",
+    "TrustBar.tsx",
+    "VisitUs.tsx"
+  ],
+  "source_bytes": 70123,
+  "metrics": {
+    "sections": 13,
+    "nodes": 859,
+    "headings": 40,
+    "interactive": 42,
+    "imgs": 70,
+    "words": 2474,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.36363636363636365
+}

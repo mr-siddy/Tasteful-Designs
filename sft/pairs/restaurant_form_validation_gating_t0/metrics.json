@@ -1,0 +1,34 @@
+{
+  "task": "restaurant_form_validation_gating_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Bakehouse.tsx",
+    "ClosingCta.tsx",
+    "EveningFlow.tsx",
+    "FaqSection.tsx",
+    "FireDeepDive.tsx",
+    "Hero.tsx",
+    "MenuBoard.tsx",
+    "ReserveLongTable.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TheRoom.tsx",
+    "TrustBar.tsx",
+    "VisitUs.tsx"
+  ],
+  "source_bytes": 66655,
+  "metrics": {
+    "sections": 14,
+    "nodes": 718,
+    "headings": 50,
+    "interactive": 39,
+    "imgs": 22,
+    "words": 2474,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.25
+}

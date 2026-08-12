@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_scroll_spy_active_link_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "CellarList.tsx",
+    "EveningFlow.tsx",
+    "FireAndGrain.tsx",
+    "GuestStories.tsx",
+    "HearthMenu.tsx",
+    "Hero.tsx",
+    "ReserveCta.tsx",
+    "SectionNav.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TheRoom.tsx",
+    "TrustBar.tsx",
+    "VisitFaq.tsx"
+  ],
+  "source_bytes": 67860,
+  "metrics": {
+    "sections": 12,
+    "nodes": 785,
+    "headings": 45,
+    "interactive": 39,
+    "imgs": 35,
+    "words": 2631,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3
+}

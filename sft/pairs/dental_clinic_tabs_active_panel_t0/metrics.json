@@ -1,0 +1,34 @@
+{
+  "task": "dental_clinic_tabs_active_panel_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClinicianRoster.tsx",
+    "ClosingCta.tsx",
+    "ComfortDeepDive.tsx",
+    "FaqSection.tsx",
+    "FirstVisitTimeline.tsx",
+    "HeroSection.tsx",
+    "Icons.tsx",
+    "MembershipPlans.tsx",
+    "PatientStories.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TreatmentPathways.tsx",
+    "TreatmentPricing.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 63383,
+  "metrics": {
+    "sections": 13,
+    "nodes": 788,
+    "headings": 46,
+    "interactive": 39,
+    "imgs": 46,
+    "words": 2571,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

@@ -1,0 +1,34 @@
+{
+  "task": "fitness_studio_modal_close_overlay_esc_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassFormats.tsx",
+    "ClosingCta.tsx",
+    "CoachRoster.tsx",
+    "FaqSection.tsx",
+    "FirstVisitSteps.tsx",
+    "HeroSection.tsx",
+    "Icons.tsx",
+    "IntroRideBooking.tsx",
+    "MemberStories.tsx",
+    "MembershipPlans.tsx",
+    "ProofBand.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TheRoom.tsx"
+  ],
+  "source_bytes": 71563,
+  "metrics": {
+    "sections": 13,
+    "nodes": 871,
+    "headings": 52,
+    "interactive": 44,
+    "imgs": 80,
+    "words": 2830,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

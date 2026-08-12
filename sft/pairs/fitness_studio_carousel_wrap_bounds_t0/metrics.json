@@ -1,0 +1,34 @@
+{
+  "task": "fitness_studio_carousel_wrap_bounds_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "CoachRoster.tsx",
+    "CoachingMethod.tsx",
+    "FacilityTour.tsx",
+    "FaqList.tsx",
+    "FirstEightWeeks.tsx",
+    "Hero.tsx",
+    "Icons.tsx",
+    "JoinCta.tsx",
+    "MemberStories.tsx",
+    "MembershipPlans.tsx",
+    "ProgramGrid.tsx",
+    "ProofBand.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx"
+  ],
+  "source_bytes": 63279,
+  "metrics": {
+    "sections": 13,
+    "nodes": 757,
+    "headings": 34,
+    "interactive": 37,
+    "imgs": 42,
+    "words": 1928,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.3
+}

@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_a11y_labels_alt_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "DiningRoomGallery.tsx",
+    "FaqSection.tsx",
+    "HearthStory.tsx",
+    "Hero.tsx",
+    "MenuBoard.tsx",
+    "PressBar.tsx",
+    "PrivateEvents.tsx",
+    "ReservationForm.tsx",
+    "ServiceSteps.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx"
+  ],
+  "source_bytes": 70371,
+  "metrics": {
+    "sections": 13,
+    "nodes": 569,
+    "headings": 39,
+    "interactive": 47,
+    "imgs": 38,
+    "words": 2298,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.25
+}

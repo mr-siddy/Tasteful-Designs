@@ -1,0 +1,33 @@
+{
+  "task": "saas_accordion_single_open_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "CustomerStories.tsx",
+    "FaqAccordion.tsx",
+    "Hero.tsx",
+    "MetadataFeeds.tsx",
+    "ModuleGrid.tsx",
+    "PricingTiers.tsx",
+    "ProofRounds.tsx",
+    "RolloutSteps.tsx",
+    "SeasonBoard.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 65575,
+  "metrics": {
+    "sections": 13,
+    "nodes": 783,
+    "headings": 38,
+    "interactive": 50,
+    "imgs": 67,
+    "words": 1990,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_carousel_wrap_bounds_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "EveningFlow.tsx",
+    "FaqList.tsx",
+    "FireDeepDive.tsx",
+    "GuestStories.tsx",
+    "HearthMenu.tsx",
+    "Hero.tsx",
+    "Icons.tsx",
+    "PrivateRooms.tsx",
+    "ProofBand.tsx",
+    "ReserveCta.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "VisitDetails.tsx"
+  ],
+  "source_bytes": 59429,
+  "metrics": {
+    "sections": 12,
+    "nodes": 639,
+    "headings": 35,
+    "interactive": 39,
+    "imgs": 34,
+    "words": 1884,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

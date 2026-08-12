@@ -1,0 +1,32 @@
+{
+  "task": "saas_scroll_spy_active_link_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "ControlsSection.tsx",
+    "CustomersSection.tsx",
+    "FaqSection.tsx",
+    "HeroSection.tsx",
+    "IntegrationsSection.tsx",
+    "PlatformSection.tsx",
+    "PricingSection.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx",
+    "WorkflowSection.tsx"
+  ],
+  "source_bytes": 51003,
+  "metrics": {
+    "sections": 12,
+    "nodes": 532,
+    "headings": 30,
+    "interactive": 37,
+    "imgs": 40,
+    "words": 1889,
+    "components": 12,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

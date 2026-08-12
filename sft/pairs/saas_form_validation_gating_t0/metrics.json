@@ -1,0 +1,35 @@
+{
+  "task": "saas_form_validation_gating_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "ContactForm.tsx",
+    "DispatchDeepDive.tsx",
+    "FaqSection.tsx",
+    "HeroSection.tsx",
+    "IntegrationGrid.tsx",
+    "PlatformModules.tsx",
+    "PricingPlans.tsx",
+    "RolloutTimeline.tsx",
+    "SecurityStrip.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TruckAppSection.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 74985,
+  "metrics": {
+    "sections": 15,
+    "nodes": 896,
+    "headings": 54,
+    "interactive": 44,
+    "imgs": 83,
+    "words": 2485,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.2857142857142857
+}

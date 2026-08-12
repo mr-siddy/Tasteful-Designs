@@ -1,0 +1,32 @@
+{
+  "task": "restaurant_responsive_grid_collapse_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "FaqList.tsx",
+    "FeastMenus.tsx",
+    "FireDeepDive.tsx",
+    "GuestVoices.tsx",
+    "HeroSection.tsx",
+    "KitchenTeam.tsx",
+    "NightMarketGrid.tsx",
+    "ProofBar.tsx",
+    "ReserveCta.tsx",
+    "RoomAndHours.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx"
+  ],
+  "source_bytes": 63566,
+  "metrics": {
+    "sections": 12,
+    "nodes": 849,
+    "headings": 43,
+    "interactive": 38,
+    "imgs": 70,
+    "words": 2238,
+    "components": 12,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

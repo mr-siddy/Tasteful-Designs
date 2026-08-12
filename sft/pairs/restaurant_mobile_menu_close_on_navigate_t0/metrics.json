@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_mobile_menu_close_on_navigate_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Faq.tsx",
+    "FireKitchen.tsx",
+    "Hero.tsx",
+    "Icons.tsx",
+    "MenuHighlights.tsx",
+    "PressStrip.tsx",
+    "PrivateEvents.tsx",
+    "ReserveCta.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Sourcing.tsx",
+    "Testimonials.tsx",
+    "TheRoom.tsx"
+  ],
+  "source_bytes": 61281,
+  "metrics": {
+    "sections": 12,
+    "nodes": 619,
+    "headings": 43,
+    "interactive": 30,
+    "imgs": 63,
+    "words": 1903,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

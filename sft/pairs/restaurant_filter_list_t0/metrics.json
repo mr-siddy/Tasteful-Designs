@@ -1,0 +1,33 @@
+{
+  "task": "restaurant_filter_list_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "DiningFormats.tsx",
+    "EveningFlow.tsx",
+    "FaqSection.tsx",
+    "Growers.tsx",
+    "GuestVoices.tsx",
+    "HearthStory.tsx",
+    "Hero.tsx",
+    "MenuExplorer.tsx",
+    "PrivateDining.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 62266,
+  "metrics": {
+    "sections": 13,
+    "nodes": 671,
+    "headings": 56,
+    "interactive": 43,
+    "imgs": 34,
+    "words": 2708,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

@@ -1,0 +1,35 @@
+{
+  "task": "fitness_studio_form_validation_gating_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassCatalog.tsx",
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "FirstSixWeeks.tsx",
+    "HeroSection.tsx",
+    "Icons.tsx",
+    "InstructorRoster.tsx",
+    "IntroForm.tsx",
+    "MembershipPlans.tsx",
+    "ScheduleStrip.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "StudioTour.tsx",
+    "Testimonials.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 78655,
+  "metrics": {
+    "sections": 14,
+    "nodes": 885,
+    "headings": 53,
+    "interactive": 44,
+    "imgs": 49,
+    "words": 2797,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.26666666666666666
+}

@@ -1,0 +1,35 @@
+{
+  "task": "fitness_studio_pricing_most_popular_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "CoachRoster.tsx",
+    "CoachingMethod.tsx",
+    "FacilityTour.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "Icons.tsx",
+    "Membership.tsx",
+    "OnRamp.tsx",
+    "PageKit.tsx",
+    "ProgramGrid.tsx",
+    "ProofBar.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx"
+  ],
+  "source_bytes": 67936,
+  "metrics": {
+    "sections": 13,
+    "nodes": 854,
+    "headings": 44,
+    "interactive": 43,
+    "imgs": 77,
+    "words": 2427,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

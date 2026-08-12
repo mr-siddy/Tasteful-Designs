@@ -1,0 +1,36 @@
+{
+  "task": "saas_modal_close_overlay_esc_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassificationEngine.tsx",
+    "ClosingCta.tsx",
+    "CommonQuestions.tsx",
+    "CustomerVoices.tsx",
+    "ExceptionDesk.tsx",
+    "FilingWorkbench.tsx",
+    "Hero.tsx",
+    "IntegrationGrid.tsx",
+    "PricingPlans.tsx",
+    "RolloutPlan.tsx",
+    "SecurityPosture.tsx",
+    "ShipmentTimeline.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx",
+    "WalkthroughDialog.tsx"
+  ],
+  "source_bytes": 70121,
+  "metrics": {
+    "sections": 16,
+    "nodes": 757,
+    "headings": 50,
+    "interactive": 40,
+    "imgs": 48,
+    "words": 2804,
+    "components": 16,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

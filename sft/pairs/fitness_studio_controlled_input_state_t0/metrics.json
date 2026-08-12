@@ -1,0 +1,35 @@
+{
+  "task": "fitness_studio_controlled_input_state_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "CoachRoster.tsx",
+    "CoachingMethod.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "MemberStories.tsx",
+    "MembershipTiers.tsx",
+    "OnboardingSteps.tsx",
+    "ProgramGrid.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TheFloor.tsx",
+    "TrialPassForm.tsx",
+    "TrustBar.tsx",
+    "WeeklyTimetable.tsx"
+  ],
+  "source_bytes": 67497,
+  "metrics": {
+    "sections": 15,
+    "nodes": 769,
+    "headings": 52,
+    "interactive": 40,
+    "imgs": 41,
+    "words": 2266,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.2727272727272727
+}

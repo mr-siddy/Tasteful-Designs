@@ -1,0 +1,33 @@
+{
+  "task": "dental_clinic_scroll_spy_active_link_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "BookingSection.tsx",
+    "ComfortSection.tsx",
+    "FaqSection.tsx",
+    "HeroSection.tsx",
+    "MembershipSection.tsx",
+    "ReviewsSection.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TeamSection.tsx",
+    "TechnologySection.tsx",
+    "TreatmentsSection.tsx",
+    "TrustBar.tsx",
+    "VisitSection.tsx"
+  ],
+  "source_bytes": 73097,
+  "metrics": {
+    "sections": 13,
+    "nodes": 860,
+    "headings": 47,
+    "interactive": 47,
+    "imgs": 94,
+    "words": 2689,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

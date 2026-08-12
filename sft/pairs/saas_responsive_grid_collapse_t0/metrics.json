@@ -1,0 +1,33 @@
+{
+  "task": "saas_responsive_grid_collapse_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "CapabilityGrid.tsx",
+    "CaseStudy.tsx",
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "FloorRollout.tsx",
+    "Hero.tsx",
+    "Integrations.tsx",
+    "PricingPlans.tsx",
+    "ProofBar.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TicketDeepDive.tsx"
+  ],
+  "source_bytes": 58890,
+  "metrics": {
+    "sections": 13,
+    "nodes": 701,
+    "headings": 43,
+    "interactive": 32,
+    "imgs": 54,
+    "words": 2246,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.375
+}

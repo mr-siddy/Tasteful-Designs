@@ -1,0 +1,32 @@
+{
+  "task": "saas_carousel_wrap_bounds_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "Capabilities.tsx",
+    "ClosingCta.tsx",
+    "DeepDive.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "Integrations.tsx",
+    "Outcomes.tsx",
+    "RolloutSteps.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "StoryCarousel.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 64416,
+  "metrics": {
+    "sections": 12,
+    "nodes": 833,
+    "headings": 47,
+    "interactive": 41,
+    "imgs": 38,
+    "words": 2551,
+    "components": 12,
+    "passed": true
+  },
+  "broken_reward": 0.2727272727272727
+}

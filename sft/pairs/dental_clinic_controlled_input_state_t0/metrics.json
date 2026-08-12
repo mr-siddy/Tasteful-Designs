@@ -1,0 +1,34 @@
+{
+  "task": "dental_clinic_controlled_input_state_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "BookingEnquiry.tsx",
+    "ClosingCta.tsx",
+    "FirstVisit.tsx",
+    "Hero.tsx",
+    "Icons.tsx",
+    "MembershipPlans.tsx",
+    "PatientStories.tsx",
+    "Questions.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TeamRoster.tsx",
+    "TechnologyDeepDive.tsx",
+    "Treatments.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 70977,
+  "metrics": {
+    "sections": 13,
+    "nodes": 804,
+    "headings": 44,
+    "interactive": 45,
+    "imgs": 78,
+    "words": 2258,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.2727272727272727
+}

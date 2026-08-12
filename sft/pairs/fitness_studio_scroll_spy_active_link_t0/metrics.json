@@ -1,0 +1,33 @@
+{
+  "task": "fitness_studio_scroll_spy_active_link_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassesSection.tsx",
+    "CoachesSection.tsx",
+    "FacilitySection.tsx",
+    "FaqSection.tsx",
+    "HeroSection.tsx",
+    "JoinSection.tsx",
+    "MembershipSection.tsx",
+    "MethodSection.tsx",
+    "ResultsSection.tsx",
+    "ScheduleSection.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 72856,
+  "metrics": {
+    "sections": 13,
+    "nodes": 909,
+    "headings": 46,
+    "interactive": 37,
+    "imgs": 68,
+    "words": 2286,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

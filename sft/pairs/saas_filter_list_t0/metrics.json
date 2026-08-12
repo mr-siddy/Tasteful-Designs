@@ -1,0 +1,33 @@
+{
+  "task": "saas_filter_list_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "AuditTrailPanel.tsx",
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "HowItWorks.tsx",
+    "LogoWall.tsx",
+    "PlatformOverview.tsx",
+    "PricingPlans.tsx",
+    "ReliabilityPanel.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TemplateGallery.tsx",
+    "Testimonials.tsx"
+  ],
+  "source_bytes": 56406,
+  "metrics": {
+    "sections": 13,
+    "nodes": 701,
+    "headings": 42,
+    "interactive": 45,
+    "imgs": 52,
+    "words": 2194,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

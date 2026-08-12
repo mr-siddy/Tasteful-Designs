@@ -1,0 +1,34 @@
+{
+  "task": "fitness_studio_mobile_menu_close_on_navigate_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClassCatalog.tsx",
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "FirstMonthPath.tsx",
+    "HeroSection.tsx",
+    "InstructorRoster.tsx",
+    "MemberStories.tsx",
+    "MembershipTiers.tsx",
+    "MethodDeepDive.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "StudioRooms.tsx",
+    "TrustBar.tsx",
+    "WeeklyTimetable.tsx"
+  ],
+  "source_bytes": 59199,
+  "metrics": {
+    "sections": 14,
+    "nodes": 726,
+    "headings": 43,
+    "interactive": 41,
+    "imgs": 39,
+    "words": 2511,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

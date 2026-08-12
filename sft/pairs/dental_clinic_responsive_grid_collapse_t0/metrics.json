@@ -1,0 +1,33 @@
+{
+  "task": "dental_clinic_responsive_grid_collapse_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "ComfortAndSedation.tsx",
+    "FaqSection.tsx",
+    "FirstVisitTimeline.tsx",
+    "Hero.tsx",
+    "MembershipPlans.tsx",
+    "ProofBar.tsx",
+    "SameDayCrowns.tsx",
+    "ServicesGrid.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TeamSection.tsx",
+    "Testimonials.tsx"
+  ],
+  "source_bytes": 54101,
+  "metrics": {
+    "sections": 13,
+    "nodes": 589,
+    "headings": 34,
+    "interactive": 31,
+    "imgs": 55,
+    "words": 1862,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

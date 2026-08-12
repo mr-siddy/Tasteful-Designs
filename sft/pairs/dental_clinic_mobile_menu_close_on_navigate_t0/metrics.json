@@ -1,0 +1,34 @@
+{
+  "task": "dental_clinic_mobile_menu_close_on_navigate_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "CalmChairside.tsx",
+    "CeramicMill.tsx",
+    "ClosingCta.tsx",
+    "DentistRoster.tsx",
+    "FaqSection.tsx",
+    "HeroSection.tsx",
+    "HoursAndAccess.tsx",
+    "MembershipPlans.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "Testimonials.tsx",
+    "TreatmentMenu.tsx",
+    "TrustBar.tsx",
+    "VisitTimeline.tsx"
+  ],
+  "source_bytes": 68412,
+  "metrics": {
+    "sections": 14,
+    "nodes": 713,
+    "headings": 51,
+    "interactive": 38,
+    "imgs": 54,
+    "words": 2545,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

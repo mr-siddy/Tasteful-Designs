@@ -1,0 +1,35 @@
+{
+  "task": "dental_clinic_carousel_wrap_bounds_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "FaqSection.tsx",
+    "FirstVisitTimeline.tsx",
+    "HeroSection.tsx",
+    "Icons.tsx",
+    "ImplantDeepDive.tsx",
+    "MembershipPlans.tsx",
+    "NervousPatientClinic.tsx",
+    "PatientStories.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TeamRoster.tsx",
+    "TreatmentPriceList.tsx",
+    "TrustBar.tsx",
+    "VisitUsSection.tsx"
+  ],
+  "source_bytes": 75793,
+  "metrics": {
+    "sections": 14,
+    "nodes": 907,
+    "headings": 51,
+    "interactive": 40,
+    "imgs": 72,
+    "words": 2967,
+    "components": 15,
+    "passed": true
+  },
+  "broken_reward": 0.3
+}

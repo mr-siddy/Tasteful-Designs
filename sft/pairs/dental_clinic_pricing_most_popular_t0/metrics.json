@@ -1,0 +1,33 @@
+{
+  "task": "dental_clinic_pricing_most_popular_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "ClosingCta.tsx",
+    "DeepDive.tsx",
+    "FaqSection.tsx",
+    "Hero.tsx",
+    "MembershipPlans.tsx",
+    "ServicesGrid.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TeamSection.tsx",
+    "Testimonials.tsx",
+    "TrustBar.tsx",
+    "VisitJourney.tsx",
+    "VisitUs.tsx"
+  ],
+  "source_bytes": 68153,
+  "metrics": {
+    "sections": 13,
+    "nodes": 792,
+    "headings": 46,
+    "interactive": 44,
+    "imgs": 64,
+    "words": 2485,
+    "components": 13,
+    "passed": true
+  },
+  "broken_reward": 0.3333333333333333
+}

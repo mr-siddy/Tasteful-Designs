@@ -1,0 +1,34 @@
+{
+  "task": "dental_clinic_filter_list_t0",
+  "sweep": "sweep03_all",
+  "superseded": false,
+  "has_brief": true,
+  "component_files": [
+    "CeramicMillFeature.tsx",
+    "ClinicianRoster.tsx",
+    "ClosingCta.tsx",
+    "ComfortProtocol.tsx",
+    "FaqSection.tsx",
+    "FirstVisitTimeline.tsx",
+    "HeroSection.tsx",
+    "Icons.tsx",
+    "MembershipPlans.tsx",
+    "PatientStories.tsx",
+    "SiteFooter.tsx",
+    "SiteHeader.tsx",
+    "TreatmentIndex.tsx",
+    "TrustBar.tsx"
+  ],
+  "source_bytes": 60036,
+  "metrics": {
+    "sections": 13,
+    "nodes": 743,
+    "headings": 38,
+    "interactive": 36,
+    "imgs": 75,
+    "words": 2179,
+    "components": 14,
+    "passed": true
+  },
+  "broken_reward": 0.3
+}

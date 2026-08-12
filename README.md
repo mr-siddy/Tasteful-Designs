@@ -43,8 +43,8 @@ must fail at least one check and the reference-patched repo must pass all of the
 | `webapp_synth/taxonomy/` | the seed library (12 component rules × 4 industries × 2 archetypes) + parser |
 | `.claude/skills/synthesize-webapp-task/` | **the generator** — Claude Code reads this to build a task |
 | `scripts/` | the work-list + the headless sweep driver that fans the skill out |
-| `tasks_web/` | the RL half — 11 tasks, all long-form |
-| `sft/` | the supervised half — 11 (brief → finished page) pairs, plus 4 archived pre-correction pages |
+| `tasks_web/` | the RL half — 48 tasks, the complete 12 seeds × 4 industries product |
+| `sft/` | the supervised half — 48 (brief → finished page) pairs, plus 4 archived pre-correction pages |
 | `webapp_synth/` | the solver module — node-enabled Prime sandbox harness, taskset, rubric, env |
 | `tests/`, `docs/` | unit tests; design specs and plans |
 
@@ -67,14 +67,16 @@ The generator is **Claude Code itself**, driven by a skill. Ask a session in thi
 synthesize a task and the skill auto-loads, or fan it out headlessly:
 
 ```bash
-python3 scripts/webapp_worklist.py --limit 4        # what's next (diverse by construction)
-SWEEP_ID=sweep03 LIMIT=4 PARALLEL=4 bash scripts/synth_sweep.sh
+python3 scripts/webapp_worklist.py                  # what's left (currently 0 — taxonomy exhausted)
+SWEEP_ID=sweep LIMIT=4 PARALLEL=5 bash scripts/synth_sweep.sh
 
 REGEN=1 bash scripts/synth_sweep.sh                 # rebuild existing tasks against the current skill
 ```
 
 One work item → one headless `claude -p` session → one validated task plus its SFT pair.
-A 4-item sweep takes **~45 min** wall clock at `PARALLEL=4` and needs no Prime key.
+Roughly **20–30 min per long-form session**, no Prime key needed; the full 37-item sweep
+took ~3.5 h at `PARALLEL=5`. The taxonomy is currently fully built, so growing the corpus
+means adding seeds or industries to `webapp_synth/taxonomy/webapp_library.md` first.
 Always re-verify a generated task yourself rather than trusting the session's self-report:
 
 ```bash
@@ -85,8 +87,8 @@ uv run evolving-coding-agent score <task> --tasks-dir tasks_web --candidate-repo
 
 ## The SFT pairs
 
-`sft/pairs/<task>/` holds each generation session's `brief.md` and the finished page it
-produced. Pages share one Vite scaffold, kept once in `sft/template/`:
+`sft/pairs/<task>/` holds each of the 48 generation sessions' `brief.md` and the finished
+page it produced. Pages share one Vite scaffold, kept once in `sft/template/`:
 
 ```bash
 cp -R sft/template /tmp/page && cp -R sft/pairs/<task>/. /tmp/page/
@@ -110,9 +112,12 @@ automated check while being visibly empty, and that was only caught by looking.
 ## Status
 
 Working and proven locally: the taxonomy, the task format and deterministic checks, the
-admission gate, local scoring, the page generator, and the long-form audit. **11 t0 tasks**,
-all `validate [OK]`, all clearing the audit, 37 work items unbuilt. Do-nothing reward runs
-0.250–0.333 against a ≤ 0.4 mandate.
+admission gate, local scoring, the page generator, and the long-form audit.
+
+**The t0 corpus is complete — 48 tasks, the full 12 seeds × 4 industries product**, every
+seed at 4/4 industry coverage and 0 work items remaining. All 48 `validate [OK]`, all 48
+clear the page audit (avg 762 DOM nodes, 2,351 words, 14 components, 57 inline svg/img).
+Do-nothing reward runs **0.231–0.375** against a ≤ 0.4 mandate.
 
 Not yet: a quality judge for best-of-N SFT selection — `page_audit` gates page *volume*,
 which jsdom can measure, but says nothing about whether a page is well *designed*. And the
