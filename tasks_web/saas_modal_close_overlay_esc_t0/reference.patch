@@ -1,0 +1,37 @@
+--- a/src/components/WalkthroughDialog.tsx
++++ b/src/components/WalkthroughDialog.tsx
+@@ -1,4 +1,4 @@
+-import { useState } from 'react'
++import { useCallback, useEffect, useState } from 'react'
+ 
+ type VolumeBand = {
+   id: string
+@@ -38,8 +38,17 @@
+   const [open, setOpen] = useState(false)
+   const [band, setBand] = useState('terminal')
+ 
+-  const close = () => setOpen(false)
++  const close = useCallback(() => setOpen(false), [])
+   const chosen = VOLUME_BANDS.find((option) => option.id === band) ?? VOLUME_BANDS[0]
++
++  useEffect(() => {
++    if (!open) return
++    const onKeyDown = (event: KeyboardEvent) => {
++      if (event.key === 'Escape') close()
++    }
++    document.addEventListener('keydown', onKeyDown)
++    return () => document.removeEventListener('keydown', onKeyDown)
++  }, [open, close])
+ 
+   return (
+     <section id="walkthrough" className="bg-[#0B1F33] text-[#E7EEF4]">
+@@ -120,6 +129,9 @@
+       {open && (
+         <div
+           data-testid="walkthrough-overlay"
++          onClick={(event) => {
++            if (event.target === event.currentTarget) close()
++          }}
+           className="fixed inset-0 z-50 flex items-center justify-center bg-[#04101C]/80 p-4 backdrop-blur-sm"
+         >
+           <div

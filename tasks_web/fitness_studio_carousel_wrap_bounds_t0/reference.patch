@@ -1,0 +1,13 @@
+--- a/src/components/MemberStories.tsx
++++ b/src/components/MemberStories.tsx
+@@ -73,8 +73,8 @@
+ export default function MemberStories() {
+   const [index, setIndex] = useState(0)
+ 
+-  const goPrev = () => setIndex((current) => current - 1)
+-  const goNext = () => setIndex((current) => current + 1)
++  const goPrev = () => setIndex((current) => (current - 1 + STORIES.length) % STORIES.length)
++  const goNext = () => setIndex((current) => (current + 1) % STORIES.length)
+ 
+   const story = STORIES[index]
+ 

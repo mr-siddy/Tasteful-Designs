@@ -1,0 +1,52 @@
+--- a/src/components/IntroRideBooking.tsx
++++ b/src/components/IntroRideBooking.tsx
+@@ -1,4 +1,4 @@
+-import { useEffect, useRef, useState } from 'react'
++import { useEffect, useState } from 'react'
+ import { ArrowIcon, BikeIcon, CheckIcon, ClockIcon } from './Icons'
+ 
+ const SLOTS = [
+@@ -30,18 +30,15 @@
+   const [mobile, setMobile] = useState('')
+   const [session, setSession] = useState(SESSIONS[0])
+   const [note, setNote] = useState('')
+-  const panelRef = useRef<HTMLDivElement | null>(null)
+-
+-  // Escape gets you out of the dialog once it is up.
++
++  // Escape gets you out of the dialog wherever the keyboard focus happens to be.
+   useEffect(() => {
+     if (!open) return
+-    const panel = panelRef.current
+-    if (!panel) return
+     const onKeyDown = (event: KeyboardEvent) => {
+       if (event.key === 'Escape') setOpen(false)
+     }
+-    panel.addEventListener('keydown', onKeyDown)
+-    return () => panel.removeEventListener('keydown', onKeyDown)
++    document.addEventListener('keydown', onKeyDown)
++    return () => document.removeEventListener('keydown', onKeyDown)
+   }, [open])
+ 
+   const openDialog = () => {
+@@ -137,18 +134,15 @@
+       {open && (
+         <div
+           data-testid="intro-overlay"
++          onClick={closeDialog}
+           className="fixed inset-0 z-50 flex items-end justify-center bg-[#101826]/80 p-4 backdrop-blur-sm sm:items-center"
+         >
+           <div
+-            ref={panelRef}
+             data-testid="intro-modal"
+             role="dialog"
+             aria-modal="true"
+             aria-labelledby="intro-dialog-title"
+-            onClick={(event) => {
+-              // A click on the dimmed area around the form puts it away again.
+-              if (event.target === event.currentTarget) setOpen(false)
+-            }}
++            onClick={(event) => event.stopPropagation()}
+             className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-[#faf5ee] shadow-[0_50px_90px_-40px_rgba(0,0,0,0.7)]"
+           >
+             <button

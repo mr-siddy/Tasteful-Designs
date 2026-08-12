@@ -1,0 +1,26 @@
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -134,6 +134,7 @@
+                   key={item.href}
+                   href={item.href}
+                   data-testid="mobile-nav-link"
++                  onClick={closeMenu}
+                   className="border-b border-[#14312c]/10 py-3.5 font-serif text-xl text-[#14312c]"
+                 >
+                   {item.label}
+@@ -144,6 +145,7 @@
+             <a
+               href="#book"
+               data-testid="mobile-menu-cta"
++              onClick={closeMenu}
+               className="mt-5 block rounded-full bg-[#d9682f] px-5 py-3 text-center text-sm font-semibold text-white"
+             >
+               Book a chair
+@@ -151,6 +153,7 @@
+             <a
+               href="tel:+15035550197"
+               data-testid="mobile-menu-phone"
++              onClick={closeMenu}
+               className="mt-3 block text-center text-sm font-semibold text-[#14312c]"
+             >
+               Call (503) 555 0197

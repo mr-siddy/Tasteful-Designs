@@ -1,0 +1,16 @@
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -29,10 +29,11 @@
+   const [menuOpen, setMenuOpen] = useState(false)
+   const [current, setCurrent] = useState('classes')
+ 
+-  // Remember which destination the visitor picked so the nav can show them
+-  // where on the page they currently are.
++  // Remember which destination the visitor picked so the nav can show where on
++  // the page they are, and put the drawer away now that they have chosen.
+   const handleNavigate = (id: string) => {
+     setCurrent(id)
++    setMenuOpen(false)
+   }
+ 
+   return (

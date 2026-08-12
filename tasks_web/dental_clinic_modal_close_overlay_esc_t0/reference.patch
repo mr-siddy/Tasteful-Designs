@@ -1,0 +1,34 @@
+--- a/src/components/NewPatientBooking.tsx
++++ b/src/components/NewPatientBooking.tsx
+@@ -1,4 +1,4 @@
+-import { useState } from 'react'
++import { useEffect, useState } from 'react'
+ import { ArrowIcon, CheckIcon, ClockIcon, CloseIcon, PhoneIcon, PinIcon } from './Icons'
+ 
+ const INCLUDED = [
+@@ -16,6 +16,15 @@
+ 
+ export function NewPatientBooking() {
+   const [open, setOpen] = useState(false)
++
++  useEffect(() => {
++    if (!open) return
++    const onKeyDown = (event: KeyboardEvent) => {
++      if (event.key === 'Escape') setOpen(false)
++    }
++    document.addEventListener('keydown', onKeyDown)
++    return () => document.removeEventListener('keydown', onKeyDown)
++  }, [open])
+ 
+   return (
+     <section id="booking" aria-labelledby="booking-heading" className="bg-[#EFE6DA]">
+@@ -96,6 +105,9 @@
+         <div
+           data-testid="booking-overlay"
+           className="fixed inset-0 z-50 flex items-center justify-center bg-[#0B2540]/70 px-4 py-8 backdrop-blur-sm"
++          onClick={(event) => {
++            if (event.target === event.currentTarget) setOpen(false)
++          }}
+         >
+           <div
+             role="dialog"

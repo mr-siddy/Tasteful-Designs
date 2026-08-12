@@ -1,0 +1,12 @@
+--- a/src/components/BookingEnquiry.tsx
++++ b/src/components/BookingEnquiry.tsx
+@@ -54,8 +54,7 @@
+     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
+   ) {
+     const { name, value } = event.target
+-    // keep the draft in step with the fields as the visitor works down the form
+-    enquiry[name as keyof Enquiry] = value
++    setEnquiry((current) => ({ ...current, [name]: value }))
+   }
+ 
+   function handleSubmit(event: FormEvent<HTMLFormElement>) {

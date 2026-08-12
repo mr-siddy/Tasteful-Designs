@@ -1,0 +1,168 @@
+--- a/src/components/TrainingTracks.tsx
++++ b/src/components/TrainingTracks.tsx
+@@ -150,6 +150,8 @@
+ 
+ export function TrainingTracks() {
+   const [active, setActive] = useState(0)
++  const track = TRACKS[active]
++  const Icon = track.icon
+ 
+   return (
+     <section id="tracks" className="bg-[#faf6ef]">
+@@ -179,7 +181,7 @@
+               role="tab"
+               id={`track-tab-${item.id}`}
+               aria-controls={`track-panel-${item.id}`}
+-              aria-selected
++              aria-selected={index === active}
+               data-testid="track-tab"
+               onClick={() => setActive(index)}
+               className={
+@@ -193,83 +195,71 @@
+           ))}
+         </div>
+ 
+-        {TRACKS.map((track) => {
+-          const Icon = track.icon
+-          return (
+-            <div
+-              key={track.id}
+-              role="tabpanel"
+-              id={`track-panel-${track.id}`}
+-              aria-labelledby={`track-tab-${track.id}`}
+-              data-testid="track-panel"
+-              className="mt-10 grid gap-10 lg:grid-cols-[1.5fr_1fr]"
++        <div
++          role="tabpanel"
++          id={`track-panel-${track.id}`}
++          aria-labelledby={`track-tab-${track.id}`}
++          data-testid="track-panel"
++          className="mt-10 grid gap-10 lg:grid-cols-[1.5fr_1fr]"
++        >
++          <div>
++            <div className="flex items-center gap-3">
++              <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#12626c]/12 text-[#12626c]">
++                <Icon className="h-6 w-6" />
++              </span>
++              <h3 className="text-2xl font-semibold tracking-tight text-[#0b3a41]">{track.title}</h3>
++            </div>
++            <p className="mt-4 max-w-2xl leading-relaxed text-[#2c565c]">{track.blurb}</p>
++
++            <ul className="mt-8 space-y-4">
++              {track.sessions.map((session) => (
++                <li
++                  key={session.name}
++                  data-testid="track-session"
++                  className="rounded-2xl border border-[#0b3a41]/10 bg-white p-6 shadow-[0_1px_2px_rgba(11,58,65,0.06)]"
++                >
++                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
++                    <h4 className="text-lg font-semibold text-[#0b3a41]">{session.name}</h4>
++                    <span className="rounded-full bg-[#f1e7d7] px-3 py-1 text-xs font-semibold text-[#2c565c]">
++                      {session.length}
++                    </span>
++                    <span className="text-xs uppercase tracking-[0.16em] text-[#5b7c81]">
++                      {session.target}
++                    </span>
++                  </div>
++                  <p className="mt-3 text-sm leading-relaxed text-[#4a6b70]">{session.detail}</p>
++                </li>
++              ))}
++            </ul>
++          </div>
++
++          <aside className="h-fit rounded-3xl bg-[#0b3a41] p-8 text-[#e9f2f1]">
++            <p className="text-[11px] uppercase tracking-[0.24em] text-[#8fc0c5]">On the timetable</p>
++            <p className="mt-3 text-3xl font-semibold tracking-tight text-[#faf6ef]">{track.weekly}</p>
++            <p className="mt-6 text-sm leading-relaxed text-[#cfe0e0]">{track.forWho}</p>
++            <p className="mt-6 text-sm font-semibold text-[#f3b27a]">{track.coach}</p>
++            <ul className="mt-7 space-y-3 border-t border-[#8fc0c5]/20 pt-6 text-sm text-[#cfe0e0]">
++              <li className="flex items-start gap-2">
++                <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-[#f3b27a]" />
++                Written into your eight-week block
++              </li>
++              <li className="flex items-start gap-2">
++                <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-[#f3b27a]" />
++                Capped at eighteen, three coaches on the floor
++              </li>
++              <li className="flex items-start gap-2">
++                <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-[#f3b27a]" />
++                Included on Ebb, Flood and Crew memberships
++              </li>
++            </ul>
++            <a
++              href="#book"
++              className="mt-8 inline-flex rounded-full bg-[#e0813d] px-6 py-3 text-sm font-semibold text-[#20120a] transition hover:bg-[#f3b27a]"
+             >
+-              <div>
+-                <div className="flex items-center gap-3">
+-                  <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#12626c]/12 text-[#12626c]">
+-                    <Icon className="h-6 w-6" />
+-                  </span>
+-                  <h3 className="text-2xl font-semibold tracking-tight text-[#0b3a41]">
+-                    {track.title}
+-                  </h3>
+-                </div>
+-                <p className="mt-4 max-w-2xl leading-relaxed text-[#2c565c]">{track.blurb}</p>
+-
+-                <ul className="mt-8 space-y-4">
+-                  {track.sessions.map((session) => (
+-                    <li
+-                      key={session.name}
+-                      data-testid="track-session"
+-                      className="rounded-2xl border border-[#0b3a41]/10 bg-white p-6 shadow-[0_1px_2px_rgba(11,58,65,0.06)]"
+-                    >
+-                      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+-                        <h4 className="text-lg font-semibold text-[#0b3a41]">{session.name}</h4>
+-                        <span className="rounded-full bg-[#f1e7d7] px-3 py-1 text-xs font-semibold text-[#2c565c]">
+-                          {session.length}
+-                        </span>
+-                        <span className="text-xs uppercase tracking-[0.16em] text-[#5b7c81]">
+-                          {session.target}
+-                        </span>
+-                      </div>
+-                      <p className="mt-3 text-sm leading-relaxed text-[#4a6b70]">{session.detail}</p>
+-                    </li>
+-                  ))}
+-                </ul>
+-              </div>
+-
+-              <aside className="h-fit rounded-3xl bg-[#0b3a41] p-8 text-[#e9f2f1]">
+-                <p className="text-[11px] uppercase tracking-[0.24em] text-[#8fc0c5]">
+-                  On the timetable
+-                </p>
+-                <p className="mt-3 text-3xl font-semibold tracking-tight text-[#faf6ef]">
+-                  {track.weekly}
+-                </p>
+-                <p className="mt-6 text-sm leading-relaxed text-[#cfe0e0]">{track.forWho}</p>
+-                <p className="mt-6 text-sm font-semibold text-[#f3b27a]">{track.coach}</p>
+-                <ul className="mt-7 space-y-3 border-t border-[#8fc0c5]/20 pt-6 text-sm text-[#cfe0e0]">
+-                  <li className="flex items-start gap-2">
+-                    <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-[#f3b27a]" />
+-                    Written into your eight-week block
+-                  </li>
+-                  <li className="flex items-start gap-2">
+-                    <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-[#f3b27a]" />
+-                    Capped at eighteen, three coaches on the floor
+-                  </li>
+-                  <li className="flex items-start gap-2">
+-                    <CheckIcon className="mt-1 h-4 w-4 shrink-0 text-[#f3b27a]" />
+-                    Included on Ebb, Flood and Crew memberships
+-                  </li>
+-                </ul>
+-                <a
+-                  href="#book"
+-                  className="mt-8 inline-flex rounded-full bg-[#e0813d] px-6 py-3 text-sm font-semibold text-[#20120a] transition hover:bg-[#f3b27a]"
+-                >
+-                  Try this track free
+-                </a>
+-              </aside>
+-            </div>
+-          )
+-        })}
++              Try this track free
++            </a>
++          </aside>
++        </div>
+       </div>
+     </section>
+   )

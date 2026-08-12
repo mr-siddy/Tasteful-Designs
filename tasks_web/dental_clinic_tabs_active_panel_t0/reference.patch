@@ -1,0 +1,26 @@
+--- a/src/components/TreatmentPathways.tsx
++++ b/src/components/TreatmentPathways.tsx
+@@ -170,7 +170,7 @@
+                 role="tab"
+                 id={`pathway-tab-${pathway.id}`}
+                 data-testid="pathway-tab"
+-                aria-selected
++                aria-selected={selected}
+                 aria-controls={`pathway-panel-${pathway.id}`}
+                 onClick={() => setActiveIndex(index)}
+                 className={
+@@ -186,10 +186,10 @@
+           })}
+         </div>
+ 
+-        <div className="mt-8 space-y-8">
+-          {PATHWAYS.map((pathway) => (
+-            <PathwayPanel key={pathway.id} pathway={pathway} />
+-          ))}
++        <div className="mt-8">
++          {PATHWAYS.map((pathway, index) =>
++            index === activeIndex ? <PathwayPanel key={pathway.id} pathway={pathway} /> : null,
++          )}
+         </div>
+       </div>
+     </section>

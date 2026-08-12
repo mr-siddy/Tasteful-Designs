@@ -1,0 +1,15 @@
+--- a/src/components/SectionNav.tsx
++++ b/src/components/SectionNav.tsx
+@@ -31,8 +31,10 @@
+       { rootMargin: SPY_BAND, threshold: 0 },
+     )
+ 
+-    const firstSection = document.getElementById(NAV_SECTIONS[0].id)
+-    if (firstSection) observer.observe(firstSection)
++    for (const section of NAV_SECTIONS) {
++      const el = document.getElementById(section.id)
++      if (el) observer.observe(el)
++    }
+ 
+     return () => observer.disconnect()
+   }, [])

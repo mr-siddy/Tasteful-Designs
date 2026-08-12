@@ -1,0 +1,27 @@
+[metadata]
+name = "fitness_studio_a11y_labels_alt_t0"
+description = "A fitness studio landing page renders its photographs, its icon-only controls and its booking fields with nothing for a screen reader to announce; every image should carry alt text, every icon control an accessible name, and every field its printed wording."
+tier = 0
+parent = ""
+domain = "fitness_studio_a11y_labels_alt"
+archetype = "repair"
+kind = "frontend"
+seed = "a11y_labels_alt"
+industry = "fitness_studio"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

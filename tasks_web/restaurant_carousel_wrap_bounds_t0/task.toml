@@ -1,0 +1,27 @@
+[metadata]
+name = "restaurant_carousel_wrap_bounds_t0"
+description = "A restaurant's guest-stories slider goes blank when you step forward past the last quote or back from the first; next and previous should stay within the four stories and keep the counter and dots in step."
+tier = 0
+parent = ""
+domain = "restaurant_carousel_wrap_bounds"
+archetype = "repair"
+kind = "frontend"
+seed = "carousel_wrap_bounds"
+industry = "restaurant"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

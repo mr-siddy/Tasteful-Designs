@@ -1,0 +1,10 @@
+--- a/src/components/WorkspaceSetup.tsx
++++ b/src/components/WorkspaceSetup.tsx
+@@ -41,6 +41,7 @@
+   const [confirmation, setConfirmation] = useState<Values | null>(null)
+ 
+   function update(field: FieldName, next: string) {
++    setValues((current) => ({ ...current, [field]: next }))
+     setErrors((current) => (current[field] && next.trim() ? { ...current, [field]: '' } : current))
+     setConfirmation(null)
+   }

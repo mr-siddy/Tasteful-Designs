@@ -1,0 +1,55 @@
+--- a/src/components/ContactForm.tsx
++++ b/src/components/ContactForm.tsx
+@@ -12,12 +12,38 @@
+ 
+ const EMPTY: FormValues = { name: '', email: '', crew: '', notes: '' }
+ 
++const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
++
+ const WHAT_HAPPENS = [
+   'A solutions engineer calls you back within one business day — not a sales development rep reading a script.',
+   'You get a sandbox loaded with your trade, your price book format and a week of realistic calls to drag around.',
+   'We quote against your actual technician count and tell you plainly if your shop is too small for us yet.',
+ ]
+ 
++function validate(values: FormValues): FieldErrors {
++  const errors: FieldErrors = {}
++
++  if (!values.name.trim()) {
++    errors.name = 'Tell us who we are meeting with.'
++  }
++
++  const email = values.email.trim()
++  if (!email) {
++    errors.email = 'We need a work email to send the walkthrough invite.'
++  } else if (!EMAIL_SHAPE.test(email)) {
++    errors.email = 'That address is missing an @ or a domain — check it once more.'
++  }
++
++  const crew = values.crew.trim()
++  if (!crew) {
++    errors.crew = 'How many technicians do you dispatch on a normal week?'
++  } else if (!Number.isFinite(Number(crew)) || Number(crew) < 1) {
++    errors.crew = 'Enter a crew size of at least 1 technician.'
++  }
++
++  return errors
++}
++
+ export default function ContactForm() {
+   const [values, setValues] = useState<FormValues>(EMPTY)
+   const [errors, setErrors] = useState<FieldErrors>({})
+@@ -29,7 +55,12 @@
+ 
+   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+     event.preventDefault()
+-    setErrors({})
++    const nextErrors = validate(values)
++    setErrors(nextErrors)
++    if (Object.keys(nextErrors).length > 0) {
++      setSent(false)
++      return
++    }
+     setSent(true)
+   }
+ 

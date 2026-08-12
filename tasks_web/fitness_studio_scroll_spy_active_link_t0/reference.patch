@@ -1,0 +1,38 @@
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -1,4 +1,4 @@
+-import { useEffect, useRef } from 'react'
++import { useEffect, useState } from 'react'
+ 
+ export type NavDestination = { id: string; label: string }
+ 
+@@ -69,10 +69,7 @@
+  * as current, so a member always knows where they are in a very long page.
+  */
+ export function SiteHeader() {
+-  // The observer fires on every scroll tick, so the section we are sitting in
+-  // is kept in a ref: the nav reads it on the way past and we do not pay for a
+-  // render every time the reader moves a few pixels.
+-  const currentId = useRef('')
++  const [currentId, setCurrentId] = useState('')
+ 
+   useEffect(() => {
+     // Server-render and older browsers simply get an unhighlighted nav.
+@@ -91,7 +88,7 @@
+         const topmost = inView.reduce((closest, entry) =>
+           closest.boundingClientRect.top <= entry.boundingClientRect.top ? closest : entry,
+         )
+-        currentId.current = topmost.target.id
++        setCurrentId(topmost.target.id)
+       },
+       { rootMargin: '-96px 0px -55% 0px', threshold: [0, 0.25, 0.6] },
+     )
+@@ -134,7 +131,7 @@
+         <nav aria-label="Sections of this page" data-testid="section-nav" className="min-w-0">
+           <ul className="flex items-center gap-1 overflow-x-auto lg:gap-2">
+             {NAV_DESTINATIONS.map((destination) => {
+-              const isCurrent = destination.id === currentId.current
++              const isCurrent = destination.id === currentId
+               return (
+                 <li key={destination.id}>
+                   <a

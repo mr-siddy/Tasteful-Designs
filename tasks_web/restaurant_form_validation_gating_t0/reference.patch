@@ -1,0 +1,51 @@
+--- a/src/components/ReserveLongTable.tsx
++++ b/src/components/ReserveLongTable.tsx
+@@ -11,6 +11,37 @@
+   { value: 'main', label: 'Main seating — sit at 7:45 pm' },
+   { value: 'buyout', label: 'Full buyout — the whole room, Sundays only' },
+ ]
++
++const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
++
++function validate(draft: Draft): Errors {
++  const found: Errors = {}
++
++  if (!draft.name.trim()) {
++    found.name = 'Tell us who the table should be under.'
++  }
++
++  const email = draft.email.trim()
++  if (!email) {
++    found.email = 'We confirm every Long Table by email, so we need an address.'
++  } else if (!EMAIL_PATTERN.test(email)) {
++    found.email = 'That is not an address we could reply to — check it over.'
++  }
++
++  const guests = draft.guests.trim()
++  const count = Number(guests)
++  if (!guests) {
++    found.guests = 'Tell us roughly how many are coming.'
++  } else if (!Number.isInteger(count) || count < 6 || count > 60) {
++    found.guests = 'The Long Table seats 6 to 60 — give us a whole number in that range.'
++  }
++
++  if (!draft.seating) {
++    found.seating = 'Pick a seating so we know which service to hold.'
++  }
++
++  return found
++}
+ 
+ function SeatingPlanArt() {
+   return (
+@@ -57,7 +88,9 @@
+ 
+   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+     event.preventDefault()
+-    setErrors({})
++    const found = validate(draft)
++    setErrors(found)
++    if (Object.keys(found).length > 0) return
+     setSent(true)
+   }
+ 

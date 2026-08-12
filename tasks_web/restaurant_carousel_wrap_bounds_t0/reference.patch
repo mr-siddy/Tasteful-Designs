@@ -1,0 +1,16 @@
+--- a/src/components/GuestStories.tsx
++++ b/src/components/GuestStories.tsx
+@@ -77,11 +77,11 @@
+   const visible = STORIES.slice(index, index + 1)
+ 
+   function showPrevious() {
+-    setIndex((current) => current - 1)
++    setIndex((current) => (current - 1 + STORIES.length) % STORIES.length)
+   }
+ 
+   function showNext() {
+-    setIndex((current) => current + 1)
++    setIndex((current) => (current + 1) % STORIES.length)
+   }
+ 
+   return (

@@ -1,0 +1,27 @@
+[metadata]
+name = "dental_clinic_scroll_spy_active_link_t0"
+description = "A dental clinic's long single-page site never highlights which section you are in; the header nav should mark exactly the in-view section's link as current, visually and for screen readers."
+tier = 0
+parent = ""
+domain = "dental_clinic_scroll_spy_active_link"
+archetype = "repair"
+kind = "frontend"
+seed = "scroll_spy_active_link"
+industry = "dental_clinic"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

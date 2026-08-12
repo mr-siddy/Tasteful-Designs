@@ -1,0 +1,18 @@
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -82,6 +82,7 @@
+                 key={item.href}
+                 href={item.href}
+                 data-testid="mobile-nav-link"
++                onClick={() => setMenuOpen(false)}
+                 className="border-b border-[#12261F]/10 py-4 font-serif text-lg text-[#12261F]"
+               >
+                 {item.label}
+@@ -90,6 +91,7 @@
+             <a
+               href="#reserve"
+               data-testid="mobile-nav-cta"
++              onClick={() => setMenuOpen(false)}
+               className="mt-5 rounded-full bg-[#C4653A] px-5 py-3 text-center text-sm font-semibold text-[#F7F1E8]"
+             >
+               Reserve a table

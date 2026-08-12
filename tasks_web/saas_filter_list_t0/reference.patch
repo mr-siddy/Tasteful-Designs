@@ -1,0 +1,11 @@
+--- a/src/components/TemplateGallery.tsx
++++ b/src/components/TemplateGallery.tsx
+@@ -118,7 +118,7 @@
+   // The chip row above the grid decides which slice of the library is on screen.
+   const visible = useMemo(
+     () => TEMPLATES.filter((template) => category === 'All' || template.category === category),
+-    [],
++    [category],
+   )
+ 
+   return (

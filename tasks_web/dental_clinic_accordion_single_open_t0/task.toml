@@ -1,0 +1,27 @@
+[metadata]
+name = "dental_clinic_accordion_single_open_t0"
+description = "A dental practice FAQ leaves every question expanded once it is clicked, stacking answers down the page; opening one question should close whichever answer was already open."
+tier = 0
+parent = ""
+domain = "dental_clinic_accordion_single_open"
+archetype = "repair"
+kind = "frontend"
+seed = "accordion_single_open"
+industry = "dental_clinic"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

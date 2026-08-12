@@ -1,0 +1,13 @@
+--- a/src/components/TreatmentIndex.tsx
++++ b/src/components/TreatmentIndex.tsx
+@@ -135,7 +135,9 @@
+ export function TreatmentIndex() {
+   const [activeCategory, setActiveCategory] = useState<CategoryId>('all')
+ 
+-  const catalogue = TREATMENTS
++  const catalogue = TREATMENTS.filter(
++    (treatment) => activeCategory === 'all' || treatment.category === activeCategory,
++  )
+ 
+   return (
+     <section id="treatments" data-testid="treatment-index" className="bg-[#F1F5F7]">

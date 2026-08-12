@@ -1,0 +1,11 @@
+--- a/src/components/CapabilityGrid.tsx
++++ b/src/components/CapabilityGrid.tsx
+@@ -131,7 +131,7 @@
+ 
+         <div
+           data-testid="capability-grid"
+-          className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-3"
++          className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+         >
+           {CAPABILITIES.map((cap) => (
+             <article

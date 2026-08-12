@@ -1,0 +1,51 @@
+--- a/src/components/IntroForm.tsx
++++ b/src/components/IntroForm.tsx
+@@ -28,6 +28,35 @@
+   'You leave with two named classes on two named days. No card, no contract, and no follow-up call trying to sell you one.',
+ ]
+ 
++const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
++
++function validate(values: FormValues): FieldErrors {
++  const found: FieldErrors = {}
++
++  if (!values.name.trim()) {
++    found.name = 'Tell us who we are booking in.'
++  }
++
++  if (!values.email.trim()) {
++    found.email = 'We need an email address to send the confirmation to.'
++  } else if (!EMAIL_PATTERN.test(values.email.trim())) {
++    found.email = 'That does not look like an address we can reply to.'
++  }
++
++  const digits = values.phone.replace(/\D/g, '')
++  if (!values.phone.trim()) {
++    found.phone = 'A mobile number, so the teacher can call you back today.'
++  } else if (digits.length < 10) {
++    found.phone = 'That is not a full ten-digit mobile number.'
++  }
++
++  if (!values.week) {
++    found.week = 'Pick the week you would like to start.'
++  }
++
++  return found
++}
++
+ export default function IntroForm() {
+   const [values, setValues] = useState<FormValues>(EMPTY)
+   const [errors, setErrors] = useState<FieldErrors>({})
+@@ -39,7 +68,11 @@
+ 
+   function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+     event.preventDefault()
+-    setErrors({})
++    const found = validate(values)
++    setErrors(found)
++    if (Object.keys(found).length > 0) {
++      return
++    }
+     setBooked(true)
+   }
+ 

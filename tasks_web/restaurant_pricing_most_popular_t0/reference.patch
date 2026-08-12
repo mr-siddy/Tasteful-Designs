@@ -1,0 +1,54 @@
+--- a/src/components/PricingPackages.tsx
++++ b/src/components/PricingPackages.tsx
+@@ -12,6 +12,8 @@
+   courses: string
+   features: string[]
+   cta: string
++  /** The one package the room actively promotes. */
++  popular: boolean
+ }
+ 
+ const PACKAGES: Package[] = [
+@@ -33,6 +35,7 @@
+       'Corkage waived on two bottles of your own',
+     ],
+     cta: 'Enquire about Hearthside',
++    popular: false,
+   },
+   {
+     id: 'chefs-table',
+@@ -53,6 +56,7 @@
+       'Three hours at the table and the room to yourselves',
+     ],
+     cta: "Enquire about the Chef's Table",
++    popular: true,
+   },
+   {
+     id: 'full-house',
+@@ -73,6 +77,7 @@
+       'A planning call with Margo four weeks out',
+     ],
+     cta: 'Enquire about a buyout',
++    popular: false,
+   },
+ ]
+ 
+@@ -80,9 +85,6 @@
+   weeknight: 'Wednesday to Thursday',
+   weekend: 'Friday to Sunday',
+ }
+-
+-/** The package the pricing row leans on, given a raised card and a tag. */
+-const flagship = PACKAGES.reduce((top, pkg) => (pkg.weeknight > top.weeknight ? pkg : top))
+ 
+ function CheckMark() {
+   return (
+@@ -166,7 +168,7 @@
+ 
+         <div className="mt-12 grid items-start gap-6 lg:grid-cols-3">
+           {PACKAGES.map((pkg) => {
+-            const promoted = pkg.id === flagship.id
++            const promoted = pkg.popular
+             return (
+               <article
+                 key={pkg.id}

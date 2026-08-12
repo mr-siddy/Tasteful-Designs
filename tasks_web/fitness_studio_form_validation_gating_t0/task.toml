@@ -1,0 +1,27 @@
+[metadata]
+name = "fitness_studio_form_validation_gating_t0"
+description = "A fitness studio's intro-session form confirms every submission, even with empty, unreachable or unchosen fields; an unusable booking should be refused with the reason shown under the offending field and no confirmation."
+tier = 0
+parent = ""
+domain = "fitness_studio_form_validation_gating"
+archetype = "repair"
+kind = "frontend"
+seed = "form_validation_gating"
+industry = "fitness_studio"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

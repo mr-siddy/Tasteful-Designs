@@ -1,0 +1,11 @@
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -74,7 +74,7 @@
+     if (typeof IntersectionObserver === 'undefined') return
+ 
+     const sections = NAV_DESTINATIONS.map((destination) =>
+-      document.getElementById(destination.href),
++      document.getElementById(destination.href.slice(1)),
+     ).filter((element): element is HTMLElement => element !== null)
+ 
+     if (sections.length === 0) return

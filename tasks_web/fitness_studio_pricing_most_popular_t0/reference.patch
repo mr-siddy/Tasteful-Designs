@@ -1,0 +1,23 @@
+--- a/src/components/Membership.tsx
++++ b/src/components/Membership.tsx
+@@ -74,6 +74,9 @@
+   },
+ ]
+ 
++/** The membership we push on the page: Coached, the mid-tier most members land on. */
++const PROMOTED_PLAN_ID = 'coached'
++
+ const BILLING_OPTIONS: { id: Billing; label: string; hint: string }[] = [
+   { id: 'monthly', label: 'Monthly', hint: 'pay as you go' },
+   { id: 'annual', label: 'Annual', hint: 'two months free' },
+@@ -128,8 +131,8 @@
+         </div>
+ 
+         <div className="mt-12 grid items-start gap-6 lg:grid-cols-3">
+-          {PLANS.map((plan, index) => {
+-            const promoted = index === PLANS.length - 1
++          {PLANS.map((plan) => {
++            const promoted = plan.id === PROMOTED_PLAN_ID
+             const price = billing === 'annual' ? plan.annual : plan.monthly
+ 
+             return (

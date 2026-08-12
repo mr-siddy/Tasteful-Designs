@@ -1,0 +1,133 @@
+--- a/src/components/DiningRoomGallery.tsx
++++ b/src/components/DiningRoomGallery.tsx
+@@ -13,6 +13,7 @@
+     seats: 'Six stools at the fire',
+     caption:
+       'The whole kitchen is one twelve-foot hearth of white oak and apple, open to the room. Six stools face it across the pass, close enough that you will smell the wood change when Marisol feeds it at seven.',
++    alt: 'The Hearth — a twelve-foot open oak fire with iron grill bars lowered over a bed of embers and pans resting on the shelf above',
+     image: photograph(
+       `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#20424c"/><stop offset="1" stop-color="#08161b"/></linearGradient>
+        <linearGradient id="f" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#ffd479"/><stop offset="0.6" stop-color="#d2601a"/><stop offset="1" stop-color="#8f2f0c"/></linearGradient></defs>
+@@ -32,6 +33,7 @@
+     seats: 'Fourteen seats, walk-in only',
+     caption:
+       'Fourteen zinc-topped seats along a bed of crushed ice, shucked to order from noon on Saturday and Sunday. No reservations here — sit down, point at what you want, and Dell will keep count on the paper in front of you.',
++    alt: 'The Oyster Counter — fourteen zinc-topped stools along a bed of crushed ice stacked with oysters and lemon halves',
+     image: photograph(
+       `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e8efee"/><stop offset="1" stop-color="#a9c3c1"/></linearGradient></defs>
+        <rect width="640" height="420" fill="url(#g)"/>
+@@ -53,6 +55,7 @@
+     seats: 'Twenty-two tables',
+     caption:
+       'The main room, which was where they cut and dressed granite until 1962. The saw marks are still in the west wall, the tables are butcher paper over oak, and the noise is on purpose.',
++    alt: 'The Cutting Shed — the main dining room with rough granite walls, twenty-two paper-topped tables and low pendant lamps',
+     image: photograph(
+       `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f4efe4"/><stop offset="1" stop-color="#cfc4b0"/></linearGradient></defs>
+        <rect width="640" height="420" fill="url(#g)"/>
+@@ -75,6 +78,7 @@
+     seats: 'Thirty seats, May to October',
+     caption:
+       'Thirty seats out on the pier deck from the first warm week in May until the lights come down in October. Blankets in the crate by the door, and the boats you are eating from tied up forty feet away.',
++    alt: 'The Harbour Terrace — a pier deck of outdoor tables under strung lights with fishing boats moored behind at dusk',
+     image: photograph(
+       `<defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5b06a"/><stop offset="0.55" stop-color="#8f6c8e"/><stop offset="1" stop-color="#2b3f57"/></linearGradient></defs>
+        <rect width="640" height="420" fill="url(#s)"/>
+@@ -95,6 +99,7 @@
+     seats: 'Twelve at one table',
+     caption:
+       'Downstairs in the cut stone, twelve chairs around a single oak table with Tobias’s racks on three sides. Private dining, one seating a night, and the only room in the building that is genuinely quiet.',
++    alt: 'The Cellar — a private stone room with one long oak table for twelve, candles down the middle and wine racks on three walls',
+     image: photograph(
+       `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2118"/><stop offset="1" stop-color="#120d09"/></linearGradient></defs>
+        <rect width="640" height="420" fill="url(#g)"/>
+@@ -149,6 +154,7 @@
+             <img
+               data-testid="gallery-stage"
+               src={room.image}
++              alt={room.alt}
+               className="aspect-[16/10] w-full object-cover"
+             />
+             <figcaption className="flex flex-wrap items-center justify-between gap-4 border-t border-[#f3ece0]/10 px-6 py-5">
+@@ -160,6 +166,7 @@
+                 <button
+                   type="button"
+                   data-testid="gallery-nav"
++                  aria-label="Previous room"
+                   onClick={() => step(-1)}
+                   className="grid h-11 w-11 place-items-center rounded-full border border-[#f3ece0]/25 transition hover:border-[#f0a35e] hover:text-[#f0a35e]"
+                 >
+@@ -170,6 +177,7 @@
+                 <button
+                   type="button"
+                   data-testid="gallery-nav"
++                  aria-label="Next room"
+                   onClick={() => step(1)}
+                   className="grid h-11 w-11 place-items-center rounded-full border border-[#f3ece0]/25 transition hover:border-[#f0a35e] hover:text-[#f0a35e]"
+                 >
+@@ -200,6 +208,7 @@
+                     <img
+                       data-testid="room-shot"
+                       src={entry.image}
++                      alt={entry.alt}
+                       className="aspect-square w-full object-cover"
+                     />
+                   </button>
+--- a/src/components/ReservationForm.tsx
++++ b/src/components/ReservationForm.tsx
+@@ -117,12 +117,13 @@
+                     <div key={field.id} className="sm:col-span-2 flex items-start gap-3 rounded-2xl bg-[#f3ece0] p-4">
+                       <input
+                         data-testid="reservation-field"
++                        id={field.id}
+                         type="checkbox"
+                         checked={Boolean(values[field.id])}
+                         onChange={(event) => set(field.id, event.target.checked)}
+                         className="mt-0.5 h-4 w-4 rounded border-[#0b2027]/30 accent-[#d2601a]"
+                       />
+-                      <label className="text-sm leading-relaxed text-[#0b2027]/75">
++                      <label htmlFor={field.id} className="text-sm leading-relaxed text-[#0b2027]/75">
+                         {field.label} — one email on Friday afternoon with the weekend board and what the boats brought
+                         in. Nothing else, ever.
+                       </label>
+@@ -133,6 +134,7 @@
+                 return (
+                   <div key={field.id} className={field.kind === 'textarea' ? 'sm:col-span-2' : ''}>
+                     <label
++                      htmlFor={field.id}
+                       className="block text-xs font-semibold uppercase tracking-[0.16em] text-[#0b2027]/60"
+                     >
+                       {field.label}
+@@ -141,6 +143,7 @@
+                     {field.kind === 'select' ? (
+                       <select
+                         data-testid="reservation-field"
++                        id={field.id}
+                         value={String(values[field.id])}
+                         onChange={(event) => set(field.id, event.target.value)}
+                         className="mt-2 w-full rounded-xl border border-[#0b2027]/15 bg-white px-4 py-3 text-sm text-[#0b2027] outline-none transition focus:border-[#d2601a]"
+@@ -154,6 +157,7 @@
+                     ) : field.kind === 'textarea' ? (
+                       <textarea
+                         data-testid="reservation-field"
++                        id={field.id}
+                         rows={3}
+                         value={String(values[field.id])}
+                         placeholder={field.placeholder}
+@@ -163,6 +167,7 @@
+                     ) : (
+                       <input
+                         data-testid="reservation-field"
++                        id={field.id}
+                         type={field.type}
+                         value={String(values[field.id])}
+                         placeholder={field.placeholder}
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -108,6 +108,7 @@
+                 key={utility.id}
+                 type="button"
+                 data-testid="header-icon-button"
++                aria-label={utility.name}
+                 aria-expanded={openUtility === utility.id}
+                 onClick={() => setOpenUtility((current) => (current === utility.id ? null : utility.id))}
+                 className={`grid h-9 w-9 place-items-center rounded-full border transition ${

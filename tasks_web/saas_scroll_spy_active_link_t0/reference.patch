@@ -1,0 +1,20 @@
+--- a/src/components/SiteHeader.tsx
++++ b/src/components/SiteHeader.tsx
+@@ -30,10 +30,13 @@
+ 
+     const observer = new IntersectionObserver(
+       (entries) => {
+-        // The reader is "in" the section the viewport band has just moved onto.
+-        const [entry] = entries
+-        if (!entry || !entry.isIntersecting) return
+-        setActiveSection(entry.target.id)
++        // The reader is "in" whichever observed section the viewport band covers
++        // highest on screen, so weigh the whole batch, not one arbitrary entry.
++        const visible = entries
++          .filter((entry) => entry.isIntersecting)
++          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)
++        if (visible.length === 0) return
++        setActiveSection(visible[0].target.id)
+       },
+       { rootMargin: '-40% 0px -55% 0px', threshold: 0 },
+     )

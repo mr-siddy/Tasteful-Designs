@@ -1,0 +1,11 @@
+--- a/src/components/MenuExplorer.tsx
++++ b/src/components/MenuExplorer.tsx
+@@ -184,7 +184,7 @@
+ export function MenuExplorer() {
+   const [course, setCourse] = useState<FilterId>(DEFAULT_COURSE)
+ 
+-  const shown = filterDishes(DEFAULT_COURSE)
++  const shown = filterDishes(course)
+ 
+   return (
+     <section id="menu" aria-labelledby="menu-heading" className="border-b border-[#241C17]/10 bg-[#F3E9DA]">

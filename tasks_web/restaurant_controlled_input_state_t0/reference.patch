@@ -1,0 +1,10 @@
+--- a/src/components/ReserveTable.tsx
++++ b/src/components/ReserveTable.tsx
+@@ -50,6 +50,7 @@
+   function bind(field: keyof Booking) {
+     return {
+       id: `booking-${field}`,
++      name: field,
+       value: booking[field],
+       onChange: handleChange,
+     }

@@ -1,0 +1,27 @@
+[metadata]
+name = "saas_scroll_spy_active_link_t0"
+description = "The sticky nav on a SaaS landing page never highlights the section the reader is currently looking at; the link for the section in view should be marked as the current one."
+tier = 0
+parent = ""
+domain = "saas_scroll_spy_active_link"
+archetype = "repair"
+kind = "frontend"
+seed = "scroll_spy_active_link"
+industry = "saas"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

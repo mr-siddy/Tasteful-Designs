@@ -1,0 +1,26 @@
+--- a/src/components/PageKit.tsx
++++ b/src/components/PageKit.tsx
+@@ -39,6 +39,7 @@
+     <figure className={frameClassName ?? 'flex h-full flex-col'}>
+       <img
+         src={shot.src}
++        alt={shot.alt}
+         data-testid={testId}
+         className={className ?? 'w-full rounded-2xl border border-[#12141A]/15 object-cover shadow-sm'}
+       />
+@@ -69,6 +70,7 @@
+   return (
+     <button
+       type="button"
++      aria-label={control.name}
+       aria-expanded={expanded}
+       onClick={onClick}
+       data-testid={testId}
+@@ -93,6 +95,7 @@
+ export function Field({ spec, children, inline }: FieldProps) {
+   const label = (
+     <label
++      htmlFor={spec.id}
+       className={
+         inline
+           ? 'text-sm leading-relaxed text-[#F7F3EC]/85'

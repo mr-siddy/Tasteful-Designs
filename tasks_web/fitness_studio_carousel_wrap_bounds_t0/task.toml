@@ -1,0 +1,27 @@
+[metadata]
+name = "fitness_studio_carousel_wrap_bounds_t0"
+description = "A gym's member-stories slider runs off the ends of the set — one press past the last member blanks the card and the counter reads 6 / 5; paging past either end should always land on a real story."
+tier = 0
+parent = ""
+domain = "fitness_studio_carousel_wrap_bounds"
+archetype = "repair"
+kind = "frontend"
+seed = "carousel_wrap_bounds"
+industry = "fitness_studio"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

@@ -1,0 +1,27 @@
+[metadata]
+name = "restaurant_pricing_most_popular_t0"
+description = "A restaurant's private-dining section puts the \"Most popular\" tag and the raised card treatment on the Full House buyout; the Chef's Table is the package that should carry it, exactly once, at either rate."
+tier = 0
+parent = ""
+domain = "restaurant_pricing_most_popular"
+archetype = "repair"
+kind = "frontend"
+seed = "pricing_most_popular"
+industry = "restaurant"
+page_archetype = "landing"
+repo_path = "repo"
+reference_patch = "reference.patch"
+evolution_strategies = []
+
+[[metadata.pass_rates]]
+solver = "webapp-opencode"
+model = "Qwen/Qwen3.5-4B"
+k = 10
+value = 0.0
+measured = false
+in_band = false
+attempts = 0
+
+[checks]
+correctness = "checks/correctness.py"
+anticheat = "checks/anticheat.py"

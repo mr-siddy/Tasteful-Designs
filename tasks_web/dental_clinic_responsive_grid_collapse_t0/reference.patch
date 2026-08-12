@@ -1,0 +1,22 @@
+--- a/src/components/ServicesGrid.tsx
++++ b/src/components/ServicesGrid.tsx
+@@ -103,8 +103,8 @@
+ ]
+ 
+ /**
+- * The treatment cards. Six of them, three to a row so the block balances against
+- * the two-column bands above and below it.
++ * The treatment cards. Six of them, laid out mobile-first: a single column on a
++ * phone, two across from the md breakpoint and three on a laptop.
+  */
+ export default function ServicesGrid() {
+   return (
+@@ -126,7 +126,7 @@
+ 
+         <div
+           data-testid="services-grid"
+-          className="mt-12 grid grid-cols-3 gap-6"
++          className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+         >
+           {SERVICES.map((service) => (
+             <article
